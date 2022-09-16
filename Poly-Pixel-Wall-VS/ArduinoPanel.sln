@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.489
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArduinoPanel", "ArduinoPanel\ArduinoPanel.csproj", "{8C56F2C7-72ED-4DC8-98F6-4A5775EE6970}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8C56F2C7-72ED-4DC8-98F6-4A5775EE6970}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C56F2C7-72ED-4DC8-98F6-4A5775EE6970}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C56F2C7-72ED-4DC8-98F6-4A5775EE6970}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C56F2C7-72ED-4DC8-98F6-4A5775EE6970}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {75FAD7A2-7DC3-45B2-8783-409BDAD6DC18}
+	EndGlobalSection
+EndGlobal
