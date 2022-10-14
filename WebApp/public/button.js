@@ -59,12 +59,32 @@ function reset(elid){
     elements[i].style.background = "white";
   }
   document.getElementById(elid).style.background = "white";
+
+  //TODO instead of passing the id of the button, pass a JSON string
+  //var = str = {"id": "button_5_6", "color" : "red"};
+  //JSON.parse(string);
+
   socket.emit('lights', {status:elid});
 
 }
+function physicalButton(data){
+  var text = data;
+  var button_id = text.id;
+  var button_color = text.color;
+  var row = text.x;
+  var col = text.y;
 
+  console.log(data)
+  console.log(button_id);
+  console.log(text.color);
+  console.log(row);
+  console.log(col);
+
+
+}
 socket.on('data', function(data){
 
   console.log(data);
+  physicalButton(data)
 
 });

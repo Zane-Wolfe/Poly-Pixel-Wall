@@ -36,13 +36,18 @@ io.on('connection',function(socket){
   console.log("Node.js is on");
   socket.on('lights',function(data){
     port.write(data.status);
-    console.log(data.status);
+    //console.log(data.status);
   });
 });
 
 parser.on('data',function(data){
-  console.log(data);
-  io.emit('data',data);
+  //console.log(data);
+  var text = data.toString(); //Convert to string
+  text = str.replace(/\r?\n|\r/g, ""); //remove '\r' from this String
+  text = JSON.stringify(data); // Convert to JSON
+  text = JSON.parse(data); //Then parse it
+  console.log(text);
+  io.emit('data',text);
 
 });
 
