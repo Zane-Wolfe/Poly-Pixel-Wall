@@ -36,26 +36,26 @@ createButtons(8,8);
 console.log(but_arr);
 
 function changeColor(elid){
-
-  //Taking button position from button id
   var row = parseInt(elid[4]);
   var col = parseInt(elid[6]);
 
   console.log(row, col);
   console.log(elid);
 
+  //Taking button position from button id
+
   //Check if button is active, if false it and turn background
   // to red
-  if(but_arr[row][col].active == false){
+  if(isActive(elid)==false){
       document.getElementById(elid).style.background= "red";
       //socket.emit('lights', {status:elid});
-      but_arr[row][col].active = true;
+      activateButton(elid);
   // Check if button is NOT active, if true change the background to
   // white
-  }else if(but_arr[row][col].active == true){
+  }else if(isActive(elid)){
       document.getElementById(elid).style.background= "white";
       //socket.emit('lights', {status:elid});
-      but_arr[row][col].active = false;
+      deactivateButton(elid);
     }
     console.log(but_arr[row][col].active);
 }
@@ -73,15 +73,40 @@ function reset(elid){
 }
 
 function isActive(elid){
+  var row = parseInt(elid[4]);
+  var col = parseInt(elid[6]);
 
+  console.log(row, col);
+  console.log(elid);
 
+  if(but_arr[row][col].active == true){
+    console.log("is Active");
+    return true;
+}else if(but_arr[row][col].active == false){
+    console.log("Is not active");
+    return false;
+  }
+  console.log(but_arr[row][col].active);
 }
-function activateButton(elid){
 
+function activateButton(elid){
+  var row = parseInt(elid[4]);
+  var col = parseInt(elid[6]);
+
+  console.log(row, col);
+  console.log(elid);
+
+  but_arr[row][col].active = true;
 }
 
 function deactivateButton(elid){
+  var row = parseInt(elid[4]);
+  var col = parseInt(elid[6]);
 
+  console.log(row, col);
+  console.log(elid);
+
+  but_arr[row][col].active = false;
 }
 //socket.on('data', function(data){
 
