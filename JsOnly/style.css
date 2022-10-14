@@ -1,0 +1,26 @@
+.main{
+  background-color: gray;
+}
+.but{
+  width: 50px;
+  height: 50px;
+  border: 2px solid black;
+  border-radius: 20px;
+}
+.but:hover{
+  border: 3px solid purple;
+}
+.gridLayout{
+  max-width: 500px;
+  display: grid;
+  /*grid-template-columns: repeat(8, 60px); */
+  grid-auto-rows:60px;
+  margin: auto;
+}
+
+.but_reset{
+  margin: auto;
+  width: 100px;
+  height: 100px;
+  border: 2px solid black;
+}

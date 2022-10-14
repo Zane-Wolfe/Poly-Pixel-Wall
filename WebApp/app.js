@@ -18,7 +18,7 @@ const parsers = SerialPort.parsers;
 const parser = new ReadlineParser({ delimeter: "\r\n" });
 
 const port = new SerialPort.SerialPort({
-  path: "COM3",
+  path: "COM5",
   baudRate: 9600,
   dataBits: 8,
   parity: "none",
@@ -40,5 +40,10 @@ io.on('connection',function(socket){
   });
 });
 
+parser.on('data',function(data){
+  console.log(data);
+  io.emit('data',data);
+
+});
 
 server.listen(3000);

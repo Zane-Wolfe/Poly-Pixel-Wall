@@ -1,4 +1,4 @@
-var socket = io();
+//var socket = io();
 const gridLayout = document.getElementById("layout");
 const but_arr = [];
 var button = {};
@@ -41,12 +41,12 @@ function changeColor(elid){
   
   if(but_arr[row][col].active == false){
       document.getElementById(elid).style.background= "red";
-      socket.emit('lights', {status:elid});
+      //socket.emit('lights', {status:elid});
       but_arr[row][col].active = true;
       
   }else if(but_arr[row][col].active == true){
       document.getElementById(elid).style.background= "white";
-      socket.emit('lights', {status:elid});
+      //socket.emit('lights', {status:elid});
       but_arr[row][col].active = false;
     }
     console.log(but_arr[row][col].active);
@@ -59,12 +59,12 @@ function reset(elid){
     elements[i].style.background = "white";
   }
   document.getElementById(elid).style.background = "white";
-  socket.emit('lights', {status:elid});
+  //socket.emit('lights', {status:elid});
 
 }
 
-socket.on('data', function(data){
+//socket.on('data', function(data){
 
-  console.log(data);
+  //console.log(data);
 
-});
+//});
