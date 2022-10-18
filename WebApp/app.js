@@ -18,7 +18,7 @@ const parsers = SerialPort.parsers;
 const parser = new ReadlineParser({ delimeter: "\r\n" });
 
 const port = new SerialPort.SerialPort({
-  path: "COM5",
+  path: "COM3",
   baudRate: 9600,
   dataBits: 8,
   parity: "none",
@@ -31,22 +31,20 @@ port.pipe(parser);
 
 
 var io = require('socket.io')(server);
-
 io.on('connection',function(socket){
   console.log("Node.js is on");
   socket.on('lights',function(data){
+    //Send information to Arduino
     port.write(data.status);
-    //console.log(data.status);
+    //io.emit('data',text);
   });
 });
 
-parser.on('data',function(data){
-  //console.log(data);
-  var text = data.toString(); //Convert to string
-  text = str.replace(/\r?\n|\r/g, ""); //remove '\r' from this String
-  text = JSON.stringify(data); // Convert to JSON
-  text = JSON.parse(data); //Then parse it
+//Receive Data from Arduino
+port.on('data',function(data){
+  text = JSON.parse(data)
   console.log(text);
+  //Emit to WebSocket
   io.emit('data',text);
 
 });
