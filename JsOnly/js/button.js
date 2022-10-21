@@ -2,7 +2,14 @@
 const gridLayout = document.getElementById("layout");
 const but_arr = [];
 var button = {};
+var mouseDown = 0;
 
+document.body.onmousedown = function() { 
+  mouseDown = 1;
+}
+document.body.onmouseup = function() {
+  mouseDown = 0;
+}
 function createButtons(row, col){
  var count = 0;
 
@@ -29,6 +36,7 @@ function createButtons(row, col){
    }
  }
  document.getElementById("layout").style.gridTemplateColumns = "repeat("+row+", 60px)";
+ addListeners();
 }
 
 createButtons(8,8);
@@ -108,6 +116,19 @@ function deactivateButton(elid){
 
   but_arr[row][col].active = false;
 }
+
+function addListeners(){
+  elements = document.getElementsByClassName("but");
+  for(var i=0; i<elements.length; i++){
+    elements[i].addEventListener('mouseover', function(){
+      if (mouseDown == 1) {
+        changeColor(this.id);
+    }
+    }, true);
+  }
+}
+
+pressedMe()
 //socket.on('data', function(data){
 
   //console.log(data);
