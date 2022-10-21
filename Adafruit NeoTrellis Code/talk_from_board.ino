@@ -78,7 +78,6 @@ TrellisCallback onoff(keyEvent evt){
     doc["color"] = Wheel(map(evt.bit.NUM, 0, X_DIM*Y_DIM, 0, 255));
     doc["x"] = evt.bit.NUM % 8;
     doc["y"] =  evt.bit.NUM / 8;
-    serializeJson(doc, Serial1);
     serializeJson(doc, Serial);
   }
   else if(evt.bit.EDGE == SEESAW_KEYPAD_EDGE_RISING && (clicked[evt.bit.NUM])/*evt.bit.EDGE == SEESAW_KEYPAD_EDGE_FALLING*/)
@@ -89,7 +88,6 @@ TrellisCallback onoff(keyEvent evt){
     doc["color"] = Wheel(map(evt.bit.NUM, 0, X_DIM*Y_DIM, 0, 255));
     doc["x"] = evt.bit.NUM % 8;
     doc["y"] =  evt.bit.NUM / 8;
-    serializeJson(doc, Serial1);
     serializeJson(doc, Serial);
   }
   
@@ -163,7 +161,7 @@ void setup() {
 }
 
 void loop() {
-  Serial1.begin(9600);
+  Serial.begin(9600);
   trellis.read();
   delay(20);
 }
