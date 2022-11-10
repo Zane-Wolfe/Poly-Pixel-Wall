@@ -18,7 +18,7 @@ const parsers = SerialPort.parsers;
 const parser = new ReadlineParser({ delimeter: "\r\n" });
 
 const port = new SerialPort.SerialPort({
-  path: "COM3",
+  path: "COM4",
   baudRate: 9600,
   dataBits: 8,
   parity: "none",

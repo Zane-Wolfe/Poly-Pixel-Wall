@@ -43,38 +43,44 @@ function changeColor(elid){
   console.log(row, col);
   console.log(elid);
   
-  if(isActive(elid)==false){
-    document.getElementById(elid).style.background= "red";
+  if(isActive(row, col)==false){
+    //Select color from color picker
+    document.getElementById(elid).style.background= document.getElementById('colorPicker').value;
     socket.emit('lights', {status:elid});
-    activateButton(elid, row, col);
+    activateButton(row, col);
+
 // Check if button is NOT active, if true change the background to
 // white
-}else if(isActive(elid)){
-    document.getElementById(elid).style.background= "white";
+}else if(isActive(row, col)){
+    document.getElementById(elid).style.background= "#B4A5A5";
     socket.emit('lights', {status:elid});
-    deactivateButton(elid, row, col);
+    deactivateButton(row, col);
   }
   console.log(but_arr[row][col].active);
 }
 
 //Function to Reset all the buttons
-//TODO also deactivate all the buttons
 function reset(elid){
-  console.log(elid);
+
   elements = document.getElementsByClassName("but");
   for(var i=0; i<elements.length; i++){
-    elements[i].style.background = "white";
+    elements[i].style.background = "#B4A5A5";
   }
-  document.getElementById(elid).style.background = "white";
+
+  //Set each button object to false
+  for(var i=0; i<8; i++){
+    for(var j=0; j<8; j++){
+      but_arr[i][j].active = false;
+    }
+  }
+  //document.getElementById(elid).style.background = "white";
 
   socket.emit('lights', {status:elid});
 
 }
 
 //Function to Check if the button is active
-function isActive(elid, row, col){
-  console.log(row, col);
-  console.log(elid);
+function isActive(row, col){
 
   if(but_arr[row][col].active == true){
     console.log("is Active");
@@ -86,26 +92,13 @@ function isActive(elid, row, col){
   console.log(but_arr[row][col].active);
 }
 
-function activateButton(elid, row, col){
+function activateButton(row, col){
   but_arr[row][col].active = true;
 }
 
-function deactivateButton(elid, row, col){
+function deactivateButton(row, col){
   but_arr[row][col].active = false;
 }
-// function physicalButton(data){
-//   var text = data;
-//   var button_id = text.id;
-//   var button_color = text.color;
-//   var row = text.x;
-//   var col = text.y;
-
-//   console.log(data)
-//   console.log(button_id);
-//   console.log(text.color);
-//   console.log(row);
-//   console.log(col);
-
 
 // }
 // socket.on('data', function(data){

@@ -8,10 +8,31 @@
     <title>PolyPixelWall</title>
     <script src="/socket.io/socket.io.js"></script>
 </head>
-<body class = "main">
-    <div class = "gridLayout" id = "layout">
+<body class="main">
+    <div class="logo">
+      <h1 class="logo-wall">
+        Poly Pixel Wall Emulator
+      </h1>
     </div>
-    <button class = "but_reset" id = "but_9_9" onclick="reset(this.id)">Reset</button>
+    <div class="container-layout">
+      <div class = "gridLayout" id ="layout">
+      </div>
+    </div>
+    <div class="container-list">
+      <ul>
+        <li>
+          <button class="but-reset" id ="but_9_9" onclick="reset(this.id)">Reset</button>
+        </li>
+        <li>
+          <h1 class="text-color-picker">Select Color =></h1>
+        </li>
+        <li>
+          <input type ="color" class="color-picker" id="colorPicker"value="#ff0000">
+        </li>
+      </ul>
+    </div>
+    
+    
   </body>
   <script src="button.js"></script>
 </html>
