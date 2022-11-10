@@ -1,4 +1,5 @@
 #include <FastLED.h>
+#include <ArduinoJson.h>
 #define NUM_LEDS 64
 #define LED_PIN 2
 CRGB leds[NUM_LEDS];
@@ -56,9 +57,16 @@ void loop() {
  Panel panel;
  unsigned char xLoc, yLoc;
  String buttonInfo;
- 
  if(Serial.available()){
   buttonInfo = Serial.readString();
+  //Send JSON To Node.js
+  //DynamicJsonDocument doc(1024);
+
+  //doc["id"] = buttonInfo;
+  //doc["color"] = "black";
+
+  //serializeJson(doc, Serial);
+  
    yLoc = buttonInfo[4];
    xLoc = buttonInfo[6];
    panel.button(xLoc,yLoc);
