@@ -1,7 +1,7 @@
 #include <FastLED.h>
 #include <ArduinoJson.h>
 #define NUM_LEDS 64
-#define LED_PIN 2
+#define LED_PIN 8
 CRGB leds[NUM_LEDS];
 
 class Panel{
@@ -46,14 +46,21 @@ void setup() {
 
   Serial.begin(9600);
   FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
-  FastLED.setBrightness(200);
-  Serial.setTimeout(100);
+  delay(1000);
+  FastLED.setBrightness(127);
+  Serial.setTimeout(1000);
 
-
+    
+  for(int i = 0; i<NUM_LEDS;i++){
+      leds[i] = CRGB:: Blue;
+    }
+  FastLED.show();
+    
 }
 
 void loop() {
 
+    
  Panel panel;
  unsigned char xLoc, yLoc;
  String buttonInfo;

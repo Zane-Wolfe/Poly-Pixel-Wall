@@ -28,6 +28,7 @@
   width: 100%;
 }
 
+<<<<<<< HEAD
 ul{
   display:flex;
   justify-content: center;
@@ -50,6 +51,12 @@ ul li {
   color: #3C415C;
   width: 150px;
   background-color: #B4A5A5;
+=======
+.but-reset{
+  margin: auto;
+  width: 100px;
+  height: 100px;
+>>>>>>> f26fe537693028ba3e1bdbdc67ba763bf7a3881a
   border: 2px solid black;
   border-radius: 25px;
   font-size: 24px;

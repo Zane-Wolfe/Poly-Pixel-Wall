@@ -10,6 +10,7 @@ document.body.onmousedown = function() {
 document.body.onmouseup = function() {
   mouseDown = 0;
 }
+
 function createButtons(row, col){
  var count = 0;
 
@@ -72,9 +73,11 @@ function reset(elid){
   //TODO also deactivate all the buttons
   console.log(elid);
   elements = document.getElementsByClassName("but");
+
   for(var i=0; i<elements.length; i++){
     elements[i].style.background = "white";
   }
+
   document.getElementById(elid).style.background = "white";
   //socket.emit('lights', {status:elid});
 
@@ -90,9 +93,11 @@ function isActive(elid){
   if(but_arr[row][col].active == true){
     console.log("is Active");
     return true;
+
 }else if(but_arr[row][col].active == false){
     console.log("Is not active");
     return false;
+
   }
   console.log(but_arr[row][col].active);
 }
@@ -119,10 +124,14 @@ function deactivateButton(elid){
 
 function addListeners(){
   elements = document.getElementsByClassName("but");
+
   for(var i=0; i<elements.length; i++){
     elements[i].addEventListener('mouseover', function(){
+
       if (mouseDown == 1) {
+
         changeColor(this.id);
+
     }
     }, true);
   }
