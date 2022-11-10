@@ -35,7 +35,7 @@ createButtons(8,8);
 
 console.log(but_arr);
 
-function changeColor(elid){
+function changeColor(elid, color){
 
   var row = parseInt(elid[4]);
   var col = parseInt(elid[6]);
@@ -43,13 +43,16 @@ function changeColor(elid){
   console.log(row, col);
   console.log(elid);
   
-  if(isActive(elid)==false){
-    document.getElementById(elid).style.background= "red";
+  if(!isActive(elid, row, col)){
+    console.log(color);
+    document.getElementById(elid).style.background= color;
     socket.emit('lights', {status:elid});
     activateButton(elid, row, col);
-// Check if button is NOT active, if true change the background to
+
+// Check if button is active, if true change the background to
 // white
-}else if(isActive(elid)){
+
+}else if(isActive(elid, row, col)){
     document.getElementById(elid).style.background= "white";
     socket.emit('lights', {status:elid});
     deactivateButton(elid, row, col);
@@ -79,9 +82,11 @@ function isActive(elid, row, col){
   if(but_arr[row][col].active == true){
     console.log("is Active");
     return true;
+
 }else if(but_arr[row][col].active == false){
     console.log("Is not active");
     return false;
+    
   }
   console.log(but_arr[row][col].active);
 }
@@ -92,6 +97,21 @@ function activateButton(elid, row, col){
 
 function deactivateButton(elid, row, col){
   but_arr[row][col].active = false;
+}
+
+//Function to create JSON object
+//TODO Send it to the arduino
+
+function sendJson(elid, color){
+
+  var obj = new Object();
+  obj.id = elid; 
+  obj.color = color; 
+  
+  var stringObj = JSON.stringify(obj);
+
+  return stringObj;
+  
 }
 // function physicalButton(data){
 //   var text = data;
@@ -108,9 +128,13 @@ function deactivateButton(elid, row, col){
 
 
 // }
-// socket.on('data', function(data){
+socket.on('json', function(data){
 
-//   console.log(data);
-//   physicalButton(data)
+console.log(data);
+var color = data.color;
+var id = data.id;
+//var row = data.row;
+// var col = data.col;
+changeColor(id,color);
 
-// });
+});
