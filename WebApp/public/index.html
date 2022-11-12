@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <title>PolyPixelWall</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="main">
+  <nav>
+    <a href="home.html">
+      <button class="but-return">
+        <i class="fa-solid fa-arrow-left-long fa-xl"></i>
+      </button>
+    </a>
+  </nav>
+    <div class="logo">
+      <h1 class="logo-wall">
+        Poly Pixel Wall Emulator
+      </h1>
+    </div>
+    <div class="container-layout">
+      <div class = "gridLayout" id ="layout">
+      </div>
+    </div>
+    <div class="container-list">
+      <ul>
+        <li>
+          <button class="but-function" onclick="reset(this.id)">Reset</button>
+        </li>
+        <li>
+          <h1 class="text-color-picker">Select Color =></h1>
+        </li>
+        <li>
+          <input type ="color" class="color-picker" id="colorPicker"value="#ff0000">
+        </li>
+        <li>
+          <button class="but-function" onclick="applyAll()">Apply All</button>
+        </li>
+      </ul>
+    </div>
+    
+    
+  </body>
+  <script src="button.js"></script>
+</html>
