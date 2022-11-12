@@ -1,0 +1,56 @@
+.main{
+    background-color: #151515;
+    text-align: center;
+    min-width: 300px;
+    height: 800px;
+  }
+
+  ul{
+    list-style: none;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+  }
+  ul li {
+    margin: 10px;
+    
+  }
+  .but-home{
+    min-width: 300px;
+    max-width: 800px;
+    min-height: 150px;
+    color: #3C415C;
+    background-color: #B4A5A5;
+    border: 2px solid black;
+    border-radius: 25px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .but-home:hover{
+    border: 3px solid purple;
+    color: purple;
+  }
+  
+  .but-home:active{
+    transform: translateY(4px);
+  }
+
+  .logo{
+    margin: 0 auto;
+    max-width: 800px;
+    min-height: 100px;
+    min-width: 300px;
+    padding: 10px;
+    border: 4px solid #3C415C;
+    border-radius: 50px;
+  }
+  
+  .logo-wall{
+    color: purple;
+    font-size: 50px;
+    text-align: center;
+    text-shadow:0.5px 1px #3C415C;
+  }
+  
