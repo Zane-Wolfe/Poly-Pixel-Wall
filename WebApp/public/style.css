@@ -1,8 +1,7 @@
 .main{
   background-color: #151515;
   text-align: center;
-  min-height: 300px;
-  min-width: 600px;
+  min-width: 300px;
   height: 800px;
 }
 .but{
@@ -24,11 +23,7 @@
   grid-auto-rows:100%;
   justify-content: center;
 }
-.container-list{
-  width: 100%;
-}
 
-<<<<<<< HEAD
 ul{
   display:flex;
   justify-content: center;
@@ -38,6 +33,8 @@ ul{
 ul li {
   display: inline-flex;
   margin: 10px;
+  max-width: 300px;
+  min-width: 30px;
   
 }
 .color-picker{
@@ -47,36 +44,31 @@ ul li {
   border-color: #151515;
 
 }
-.but-reset{
+.but-function{
   color: #3C415C;
   width: 150px;
   background-color: #B4A5A5;
-=======
-.but-reset{
-  margin: auto;
-  width: 100px;
-  height: 100px;
->>>>>>> f26fe537693028ba3e1bdbdc67ba763bf7a3881a
   border: 2px solid black;
   border-radius: 25px;
   font-size: 24px;
   font-weight: bold;
 }
 
-.but-reset:hover{
+.but-function:hover{
   border: 3px solid purple;
+  color: purple;
 }
 
-.but-reset:active{
-  transform: translateY(2px)
+.but-function:active{
+  transform: translateY(4px);
 }
+
 
 .logo{
   margin: 0 auto;
-  max-width: 1500px;
+  max-width: 800px;
   min-height: 100px;
   min-width: 300px;
-  width: 800px;
   padding: 10px;
   border: 4px solid #3C415C;
   border-radius: 50px;
@@ -92,4 +84,26 @@ ul li {
 .text-color-picker{
   margin: center;
   color: #3C415C;
+}
+nav{
+  display: flex;
+  justify-content: left;
+  margin: 5px;
+  min-height: 40px;
+}
+
+.but-return{
+  color: #3C415C;
+  min-width: 100px;
+  max-width: 150px;
+  background-color: #B4A5A5;
+  border: 2px solid black;
+  border-radius: 25px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.but-return:hover{
+  border: 3px solid purple;
+  color: purple;
 }
