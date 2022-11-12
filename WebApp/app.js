@@ -10,8 +10,6 @@ var app = module.exports.app = express();
 app.use(express.static('./public'));
 var server = http.createServer(app);
 
-var inBuffer = [];
-
 app.get('/',(req,res)=>{
   res.sendFile(path.resolve(__dirname,'index.html'));
 });
@@ -20,11 +18,7 @@ const parsers = SerialPort.parsers;
 const parser = new ReadlineParser({ delimeter: "\r\n" });
 
 const port = new SerialPort.SerialPort({
-<<<<<<< HEAD
   path: "COM4",
-=======
-  path: "COM5",
->>>>>>> f26fe537693028ba3e1bdbdc67ba763bf7a3881a
   baudRate: 9600,
   dataBits: 8,
   parity: "none",
@@ -37,32 +31,15 @@ port.pipe(parser);
 
 
 var io = require('socket.io')(server);
+
 io.on('connection',function(socket){
   console.log("Node.js is on");
   socket.on('lights',function(data){
     //Send information to Arduino
-    port.write(data.status);
-    //io.emit('data',text);
+    port.write(data.id);
+    console.log(data);
   });
 });
 
-
-//Receive Data from Arduino
-port.on('data',function(data){
-  try
-  {
-    console.log(concat(inBuffer.join(""), data.toString))
-    text = JSON.parse(concat(inBuffer.join(""), data.toString))
-    console.log(text);
-    //Emit to WebSocket
-    io.emit('json',text);
-  }
-  catch
-  {
-    inBuffer.push(data.toString());
-    console.log("oops")
-  }
-
-});
 
 server.listen(3000);
