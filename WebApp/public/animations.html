@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <title>PolyPixelWall</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="main">
+  <nav>
+    <a href="home.html">
+      <button class="but-return">
+        <i class="fa-solid fa-arrow-left-long fa-xl"></i>
+      </button>
+    </a>
+  </nav>
+    <div class="logo">
+      <h1 class="logo-wall">
+        Animations Creator
+      </h1>
+    </div>
+    <div class="container">
+      <div class="container-anim">
+        <ul class="list-of-anim "id="list-of-anim">
+
+        </ul>
+      </div>
+      <div class="container-list">
+        <div class = "gridLayout" id ="layout"></div>
+      </div>
+    </div>
+      <div>
+        <ul>
+          <li>
+            <button class="but-function" onclick="saveFrame()" >Save </button>
+          </li>
+          <li>
+            <button class="but-function" onclick="deleteFrame()" >Delete Last</button>
+          </li>
+          <li>
+            <button class="but-function" onclick="saveAll()" >Save All Animations</button>
+          </li>
+          <li>
+            <input type="number" id="delay" min="1" max="10000">
+            <button class="but-function" onclick="addDelay()" >Add Delay (ms) </button>
+          </li>
+          <li>
+            <button class="but-function" onclick="reset(this.id)">Reset</button>
+          </li>
+          <li>
+            <h1 class="text-color-picker">Select Color =></h1>
+          </li>
+          <li>
+            <input type ="color" class="color-picker" id="colorPicker"value="#ff0000">
+          </li>
+          <li>
+            <button class="but-function" onclick="applyAll()">Apply All</button>
+          </li>
+        </ul>
+      </div>
+
+    
+    
+  </body>
+  <script src="animations.js"></script>
+</html>
