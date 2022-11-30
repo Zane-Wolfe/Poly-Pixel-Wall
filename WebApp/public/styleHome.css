@@ -5,14 +5,14 @@
     height: 800px;
   }
 
-  ul{
+  .ul-home{
     list-style: none;
     display:flex;
     flex-direction: column;
     justify-content: center;
     align-items: stretch;
   }
-  ul li {
+  .li-home {
     margin: 10px;
     
   }
