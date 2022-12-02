@@ -123,7 +123,7 @@ function createButtons(row, col){
   }
 
   //Variables to count to keep track of the elements for deletion and naming purposes.
-  var countAnim=0;
+  var countAnim = 0;
   var countFrames = 0;
 
   function saveFrame(){

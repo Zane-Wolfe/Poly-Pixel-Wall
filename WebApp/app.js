@@ -21,7 +21,7 @@ const parsers = SerialPort.parsers;
 const parser = new ReadlineParser({ delimeter: "\r\n" });
 
 const port = new SerialPort.SerialPort({
-  path: "COM4",
+  path: "COM3",
   baudRate: 9600,
   dataBits: 8,
   parity: "none",
@@ -111,11 +111,12 @@ function createFile(data, file, type){
       for(var j=0; j<8;j++){
         //Pushing elements to the string
         color = data[i][j].color;
-        list.push('led['+i+']['+j+']' + color + ';' );
+        //Converting XY matrix to single number (Easier to address it)
+        list.push('led['+(j+(i*8))+']' + color + ';' );
       }
     }
   }else if(type == 'delay'){
-    list.push('delay = ' + data + 'ms');
+    list.push('delay = ' + data + 'ms' + ';');
   }
   //Function to create the file
   fs.writeFileSync(file, list.toString().replaceAll(',', ''), function(err){
@@ -169,8 +170,10 @@ function saveAll(increment = 0){
         return saveAll(increment+1);
 
       });
-      //delete file
+      
     } else if (err.code === 'ENOENT') {
+      //If file does not exist, create final file and put the array inside of it
+      //Delete all the other files
       file = 'animation_final.txt';
       fs.writeFileSync(file, list.toString().replaceAll(',', ''), function(err){
         if(err){
@@ -181,11 +184,11 @@ function saveAll(increment = 0){
       for(var i=0; i<increment; i++){
         deleteFile(i);
       }
-      // file does not exist
     } else {
         //Error
         console.log('Error: ', err.code);
       }
     });
 }
+
 server.listen(3000);
