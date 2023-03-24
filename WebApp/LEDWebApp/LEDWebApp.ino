@@ -1,7 +1,6 @@
 #include <FastLED.h>
-#include <ArduinoJson.h>
-#define NUM_LEDS 64
-#define LED_PIN 8
+#define NUM_LEDS 16
+#define LED_PIN 2
 CRGB leds[NUM_LEDS];
 
 class Panel{
@@ -48,7 +47,6 @@ void setup() {
   FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
   delay(1000);
   FastLED.setBrightness(127);
-  Serial.setTimeout(1000);
 
     
   for(int i = 0; i<NUM_LEDS;i++){
@@ -64,8 +62,6 @@ void loop() {
  Panel panel;
  unsigned char xLoc, yLoc;
  String buttonInfo;
- if(Serial.available()){
-  buttonInfo = Serial.readString();
   //Send JSON To Node.js
   //DynamicJsonDocument doc(1024);
 
@@ -84,4 +80,4 @@ void loop() {
     FastLED.show();
    }
 }
-}
+

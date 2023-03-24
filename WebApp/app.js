@@ -4,7 +4,13 @@ var http = require('http');
 const SerialPort = require("serialport");
 const { ReadlineParser } = require("@serialport/parser-readline");
 const filePath = path.join(__dirname, '../public/');
-
+//const sqlite3 = require('sqllite3');
+// const db = new sqllite3.Database('./animationsDB.db', sqlite3.OPEN_READWRITE,(err) => {
+//   if(err) {
+//     console.error(err.message);
+//     }
+//     console.log('Connected to DB');
+// });
 
 const express = require('express');
 const { Socket } = require('socket.io');
@@ -21,17 +27,15 @@ const parsers = SerialPort.parsers;
 const parser = new ReadlineParser({ delimeter: "\r\n" });
 
 const port = new SerialPort.SerialPort({
-  path: "COM3",
+  path: "COM4",
   baudRate: 9600,
-  dataBits: 8,
-  parity: "none",
-  stopBits: 1,
-  flowControl: false,
+  //dataBits: 8,
+  //parity: "none",
+  //stopBits: 1,
+  //flowControl: false,
 });
 
 port.pipe(parser);
-
-
 
 var io = require('socket.io')(server);
 
@@ -43,7 +47,19 @@ io.on('connection',function(socket){
     //console.log(data);
   });
 });
+// Read the port data
+//io.on('data',function(data){
+  //console.log(data);
+//});
 
+parser.on('data',function(data){
+  console.log(data);
+  for(let i=0;i<64;i++){
+    if(data[i+1]=='1'){
+      console.log(i+1, "is being pressed");
+    }
+  }
+})
 //Socket sent by the animation page
 io.on('connection',function(socket){
   socket.on('anim',function(data){
