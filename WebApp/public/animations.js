@@ -82,11 +82,11 @@ function createButtons(row, col){
   //Function to Check if the button is active
   function isActive(row, col){
   
-    if(but_arr[row][col].active == true){
+    if(but_arr[row][col].active === true){
       console.log("is Active");
       return true;
   
-  }else if(but_arr[row][col].active == false){
+  }else if(but_arr[row][col].active === false){
       console.log("Is not active");
       return false;
       
@@ -102,20 +102,19 @@ function createButtons(row, col){
     but_arr[row][col].active = false;
   }
   
-  function applyAll(){
-  
-    elements = document.getElementsByClassName("but");
-    color = document.getElementById('colorPicker').value;
-    for(var i=0; i<elements.length; i++){
-      elements[i].style.background = color;
-    }
-  
-    for(var i=0; i<8; i++){
-      for(var j=0; j<8; j++){
-        but_arr[i][j].active = true;
-        but_arr[i][j].color = color;
+  function applyAll() {
+      let elements = document.getElementsByClassName("but");
+      let color = document.getElementById('colorPicker').value;
+      for (let i = 0; i < elements.length; i++) {
+          elements[i].style.background = color;
       }
-    }
+
+      for (let i = 0; i < 8; i++) {
+          for (let j = 0; j < 8; j++) {
+              but_arr[i][j].active = true;
+              but_arr[i][j].color = color;
+          }
+      }
   }
 
   function emitSignal(but_arr){
@@ -152,7 +151,7 @@ function createButtons(row, col){
     var ulList = document.getElementById("list-of-anim");
     var list = document.getElementsByClassName('li-anim')[countFrames-1];
     console.log(countFrames);
-    if (countAnim!=0){
+    if (countAnim!==0){
       countAnim--;
       ulList.removeChild(list);
     }

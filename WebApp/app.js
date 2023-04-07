@@ -54,8 +54,8 @@ io.on('connection',function(socket){
 
 parser.on('data',function(data){
   console.log(data);
-  for(let i=0;i<64;i++){
-    if(data[i+1]=='1'){
+  for(let i=0;i<=64;i++){
+    if(data[i+1]==='1'){
       console.log(i+1, "is being pressed");
     }
   }
@@ -103,7 +103,6 @@ function checkFile(data, increment = 0, type){
     }else if(type == 'delay'){
       return checkFile(data, increment+1, type);
     }
-
   } else if (err.code === 'ENOENT') {
     // file does not exist
     if(type == 'anim'){
