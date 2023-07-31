@@ -117,40 +117,33 @@ function createButtons(row, col){
       }
   }
 
-  function emitSignal(but_arr){
-    socket.emit('anim', but_arr)
-  }
-
-  //Variables to count to keep track of the elements for deletion and naming purposes.
   var countAnim = 0;
-  var countFrames = 0;
 
   function saveFrame(){
-    emitSignal(but_arr);
     var ulList = document.getElementById("list-of-anim");
     var newList = document.createElement('li');
+
     newList.setAttribute("class", "li-anim");
-    newList.textContent = 'Animation ' + countAnim;
+    newList.textContent = 'Frame ' + countAnim;
     ulList.appendChild(newList);
+
     countAnim++;
-    countFrames++;
+
+    //Add attribute "delay" to but_arr object
+    let new_but_arr = {...but_arr};
+
+    new_but_arr.delay = document.getElementById('delay').value;
+
+    socket.emit('createFrame', new_but_arr);
   }
 
   function addDelay(){
-    var delay = document.getElementById('delay').value;
-    var ulList = document.getElementById("list-of-anim");
-    var newList = document.createElement('li');
-    newList.setAttribute("class", "li-anim");
-    newList.textContent = 'Delay ' + delay + ' ms';
-    ulList.appendChild(newList);
-    countFrames++;
-    socket.emit('delay', delay);
+    console.log("add delay");
   }
 
   function deleteFrame(){
     var ulList = document.getElementById("list-of-anim");
     var list = document.getElementsByClassName('li-anim')[countFrames-1];
-    console.log(countFrames);
     if (countAnim!==0){
       countAnim--;
       ulList.removeChild(list);

@@ -121,5 +121,3 @@ function applyAll(){
 function emitSignal(elid, _row, _col, _color, _status){
   socket.emit('lights', {id:elid, row: _row, col: _col, color: _color, status: _status})
 }
-
-// }
