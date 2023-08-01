@@ -23,7 +23,7 @@
       </h1>
     </div>
     <div class="container-anim-select">
-      <h1>No Animation Selected</h1>
+      <h1 id="anim-selected">No Animation Selected</h1>
     </div>
     <dialog class="modal" id="modal-create">
       <h2>Create a name for your animation</h2>
@@ -50,20 +50,20 @@
       <div>
         <ul>
           <li>
-            <button class="but-function" onclick="saveFrame()" >Save </button>
+            <button class="but-function-anim" onclick="saveFrame()" disabled>Save </button>
           </li>
           <li>
-            <button class="but-function" onclick="deleteFrame()" >Delete Last</button>
+            <button class="but-function-anim" onclick="deleteFrame()" disabled >Delete Last</button>
           </li>
           <li>
-            <button class="but-function" onclick="saveAll()" >Save All Animations</button>
+            <button class="but-function-anim" onclick="saveAll()" disabled>Save All Animations</button>
           </li>
           <li>
             <input type="number" id="delay" min="1" max="10000">
-            <button class="but-function" onclick="addDelay()" >Add Delay (ms) </button>
+            <button class="but-function-anim" onclick="addDelay()" disabled>Add Delay (ms) </button>
           </li>
           <li>
-            <button class="but-function" onclick="reset(this.id)">Reset</button>
+            <button class="but-function-anim" onclick="reset(this.id)">Reset</button>
           </li>
           <li>
             <h1 class="text-color-picker">Select Color =></h1>
@@ -72,7 +72,7 @@
             <input type ="color" class="color-picker" id="colorPicker" value="#ff0000">
           </li>
           <li>
-            <button class="but-function" onclick="applyAll()">Apply All</button>
+            <button class="but-function-anim" onclick="applyAll()">Apply All</button>
           </li>
         </ul>
       </div>

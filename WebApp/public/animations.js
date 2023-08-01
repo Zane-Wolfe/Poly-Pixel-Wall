@@ -123,6 +123,7 @@ function createButtons(row, col){
   function saveFrame(){
     var ulList = document.getElementById("list-of-anim");
     var newList = document.createElement('li');
+    const textarea = document.querySelector('textarea[name="animation-name"]');
 
     newList.setAttribute("class", "li-anim");
     newList.textContent = 'Frame ' + countAnim;
@@ -135,7 +136,7 @@ function createButtons(row, col){
 
     new_but_arr.delay = document.getElementById('delay').value;
 
-    socket.emit('createFrame', new_but_arr);
+    socket.emit('createFrame', new_but_arr, textarea.value);
   }
 
   function addDelay(){
@@ -177,8 +178,21 @@ function createAnimation(){
     }else{
       modal.close();
 
+      selectAnimation(textarea.value);
+
       socket.emit('createAnimation',textarea.value);
+      
     }
   });
   
+}
+
+function selectAnimation(text){
+  document.getElementById('anim-selected').innerHTML = text;
+  
+  const buttons = document.querySelectorAll('.but-function-anim');
+
+  buttons.forEach(button => {
+    button.disabled = false;
+  });
 }

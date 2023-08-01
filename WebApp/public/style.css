@@ -243,3 +243,29 @@ nav{
   color: #3C415C;
   font-size: 32px;
 }
+
+.but-function-anim{
+  color: #3C415C;
+  width: 150px;
+  background-color: #B4A5A5;
+  border: 2px solid black;
+  border-radius: 25px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.but-function-anim:hover{
+  border: 3px solid purple;
+  color: purple;
+}
+
+.but-function-anim:active{
+  transform: translateY(4px);
+}
+
+.but-function-anim:disabled{
+  background-color: #E6E6E6;
+  border-color: #CCCCCC;
+  color: #CCCCCC;
+  cursor: not-allowed;
+}

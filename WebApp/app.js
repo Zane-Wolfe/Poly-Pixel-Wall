@@ -61,8 +61,8 @@ app.get('/',(req,res)=>{
 
 //Socket sent by the animation page
 io.on('connection',function(socket){
-  socket.on('createFrame',function(but_arr){
-    createFrame(but_arr);
+  socket.on('createFrame',function(but_arr, text){
+    createFrame(but_arr, text);
   });
 });
 
@@ -86,10 +86,10 @@ io.on('connection', function(socket){
   });
 });
 
-function createFrame(but_arr)
+function createFrame(but_arr, text)
 {
   let delay = parseInt(but_arr.delay);
-
+  const tableName = text;
   let but_arr_obj = { ...but_arr };
   delete but_arr_obj.delay;
 
@@ -97,7 +97,7 @@ function createFrame(but_arr)
 
   const db = new sqlite3.Database('animationsDB.db');
 
-  const query = 'INSERT INTO animationsTemp (buttons, delay) VALUES (?,?)';
+  const query = `INSERT INTO ${tableName} (buttons, delay) VALUES (?,?)`;
   const values = [but_arr_string, delay];
 
   db.run(query, values, function(err) {
@@ -121,7 +121,7 @@ function createTable(name)
     db.run(`
       CREATE TABLE IF NOT EXISTS ${tableName} (
         ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        code TEXT,
+        buttons TEXT,
         delay INTEGER
       )
     `);
