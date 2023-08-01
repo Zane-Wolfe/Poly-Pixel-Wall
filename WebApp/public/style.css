@@ -212,6 +212,10 @@ nav{
   margin-left: 12px;
 }
 
+.input-delay{
+  height: 50%;
+}
+
 .modal{
   text-align: center;
   background: white;
@@ -230,7 +234,7 @@ nav{
 }
 
 .modal h2{
-  color: purple;
+  color: black;
   font-weight: bold;
 }
 

@@ -28,9 +28,14 @@
     <dialog class="modal" id="modal-create">
       <h2>Create a name for your animation</h2>
       <textarea maxlength="30" name="animation-name" id="animation-name" cols="30" rows="1"></textarea>
-      <button class="modal-button">OK</button>
+      <button id="modal-button-create">OK</button>
     </dialog>
-    <dialog class="modal" id="modal-edit"></dialog>
+    <dialog class="modal" id="modal-edit">
+      <h2>Select An Existing Animation</h2>
+      <select id="table-select">
+      </select>
+      <button id="modal-button-edit">OK</button>
+    </dialog>
     <dialog class="modal" id="modal-delete"></dialog>
     <div class="container">
       <div class="container-anim">
@@ -59,8 +64,8 @@
             <button class="but-function-anim" onclick="saveAll()" disabled>Save All Animations</button>
           </li>
           <li>
-            <input type="number" id="delay" min="1" max="10000">
-            <button class="but-function-anim" onclick="addDelay()" disabled>Add Delay (ms) </button>
+            <h1 class="text-color-picker">Add Delay (ms) </button>
+            <input class="input-delay" type="number" id="delay" min="1" max="10000" value="100">
           </li>
           <li>
             <button class="but-function-anim" onclick="reset(this.id)">Reset</button>

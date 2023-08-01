@@ -20,6 +20,28 @@ app.get('/',(req,res)=>{
   res.sendFile(path.resolve(__dirname,'index.html'));
 });
 
+app.get('/tables', (req, res) => {
+  const db = new sqlite3.Database('animationsDB.db');
+
+  db.all("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'", (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).send('Error');
+    } else {
+      const tableNames = rows.map(row => row.name);
+      res.json(tableNames);
+    }
+
+    db.close((err) => {
+      if (err) {
+        console.error('Closing Failed', err.message);
+      } else {
+        console.log('Closed Success');
+      }
+    });
+  });
+});
+
 // const parsers = SerialPort.parsers;
 // const parser = new ReadlineParser({ delimeter: "\r\n" });
 

@@ -163,11 +163,11 @@ function createButtons(row, col){
     
     //Logic here to send socket for saving all
   }
-  
+
 function createAnimation(){
-  const modal = document.querySelector('.modal');
-  const closeModal = document.querySelector('.modal-button')
-  const textarea = document.querySelector('textarea[name="animation-name"]');
+  const modal = document.getElementById('modal-create');
+  const closeModal = document.getElementById('modal-button-create');
+  const textarea = document.getElementById('animation-name');
 
   modal.showModal();
 
@@ -181,18 +181,55 @@ function createAnimation(){
       selectAnimation(textarea.value);
 
       socket.emit('createAnimation',textarea.value);
-      
+  
     }
   });
   
 }
 
+function editAnimation(){
+  const modal = document.getElementById('modal-edit');
+  const closeModal = document.getElementById('modal-button-edit');
+
+  modal.showModal();
+
+  //Grab Table Names From Nodejs and put them as options on the Select Tag
+  fetch('/tables')
+  .then(response => response.json())
+  .then(data => {
+    const selectElement = document.getElementById('table-select');
+
+    selectElement.innerHTML = '';
+
+    data.forEach(tableName => {
+      const newOption = document.createElement('option');
+      newOption.value = tableName;
+      newOption.textContent = tableName;
+      selectElement.appendChild(newOption);
+    });
+  })
+  .catch(error => console.error('Error:', error));
+
+  closeModal.addEventListener('click',()=>{
+    const select = document.getElementById('table-select');
+    const newTableName = select.options[select.selectedIndex].value
+
+    if(newTableName === ""){
+      console.log("Select empty");
+    }else{
+      modal.close();
+      selectAnimation(newTableName);
+    }
+  });
+}
+
 function selectAnimation(text){
   document.getElementById('anim-selected').innerHTML = text;
-  
+
   const buttons = document.querySelectorAll('.but-function-anim');
 
   buttons.forEach(button => {
     button.disabled = false;
   });
+
 }
