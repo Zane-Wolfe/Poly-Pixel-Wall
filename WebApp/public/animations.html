@@ -22,6 +22,16 @@
         Animations Creator
       </h1>
     </div>
+    <div class="container-anim-select">
+      <h1>No Animation Selected</h1>
+    </div>
+    <dialog class="modal" id="modal-create">
+      <h2>Create a name for your animation</h2>
+      <textarea maxlength="30" name="animation-name" id="animation-name" cols="30" rows="1"></textarea>
+      <button class="modal-button">OK</button>
+    </dialog>
+    <dialog class="modal" id="modal-edit"></dialog>
+    <dialog class="modal" id="modal-delete"></dialog>
     <div class="container">
       <div class="container-anim">
         <ul class="list-of-anim " id="list-of-anim">
@@ -31,6 +41,11 @@
       <div class="container-list">
         <div class = "gridLayout" id ="layout"></div>
       </div>
+    </div>
+    <div class="container-edit">
+      <button class="but-anim-selector" onclick="createAnimation()">Create Anim</button>
+      <button class="but-anim-selector" onclick="editAnimation()">Edit Anim</button>
+      <button class="but-anim-selector" onclick="deleteAnimation()">Delete Anim</button>
     </div>
       <div>
         <ul>

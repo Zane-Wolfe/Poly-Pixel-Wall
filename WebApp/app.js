@@ -80,6 +80,12 @@ io.on('connection',function(socket){
   });
 });
 
+io.on('connection', function(socket){
+  socket.on('createAnimation', function(name){
+    createTable(name);
+  });
+});
+
 function createFrame(but_arr)
 {
   let delay = parseInt(but_arr.delay);
@@ -104,7 +110,29 @@ function createFrame(but_arr)
     db.close();
   });
 
-  console.log(but_arr_obj);
-  console.log(delay);
 }
+
+function createTable(name)
+{
+  const db = new sqlite3.Database('animationsDB.db');
+  const tableName = name;
+
+  db.serialize(() => {
+    db.run(`
+      CREATE TABLE IF NOT EXISTS ${tableName} (
+        ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        code TEXT,
+        delay INTEGER
+      )
+    `);
+  });
+
+ db.close((err) => {
+  if (err) {
+    return console.error(err.message);
+  }
+});
+  
+}
+
 server.listen(3000);

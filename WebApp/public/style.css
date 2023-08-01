@@ -200,3 +200,46 @@ nav{
   justify-content: center;
   align-items: center;
 }
+
+.container-edit {
+  display: flex;
+  margin-top: 20px;
+}
+
+.container-edit button{
+  display: inline-block; 
+  margin: 0;
+  margin-left: 12px;
+}
+
+.modal{
+  text-align: center;
+  background: white;
+}
+
+.modal textarea{
+  resize: none;
+  width: 100%;
+}
+
+.modal button{
+  display: block;
+  height: 30px;
+  width: 50px;
+  margin: 20px auto 0;
+}
+
+.modal h2{
+  color: purple;
+  font-weight: bold;
+}
+
+.container-anim-select{
+  display: flex;
+  height: 10%;
+}
+
+.container-anim-select h1{
+  color: #3C415C;
+  font-size: 32px;
+}

@@ -51,8 +51,7 @@ function createButtons(row, col){
       document.getElementById(elid).style.background = color ;
       activateButton(row, col);
   
-  // Check if button is NOT active, if true change the background to
-  // white
+  // Check if button is NOT active, if true change the background to white
   }else if(isActive(row, col)){
       document.getElementById(elid).style.background= color;
       deactivateButton(row, col);
@@ -117,6 +116,8 @@ function createButtons(row, col){
       }
   }
 
+
+
   var countAnim = 0;
 
   function saveFrame(){
@@ -143,12 +144,13 @@ function createButtons(row, col){
 
   function deleteFrame(){
     var ulList = document.getElementById("list-of-anim");
-    var list = document.getElementsByClassName('li-anim')[countFrames-1];
+    var list = document.getElementsByClassName('li-anim')[countAnim-1];
     if (countAnim!==0){
       countAnim--;
       ulList.removeChild(list);
     }
-    socket.emit('delete', countFrames);
+    
+    //Logic here to send socket for deletion
   }
 
   function saveAll(){
@@ -156,8 +158,27 @@ function createButtons(row, col){
     while(ulList.firstChild){
       ulList.removeChild(ulList.firstChild);
     }
-    countFrames = 0; 
     countAnim = 0;
-    socket.emit('saveAll');
+    
+    //Logic here to send socket for saving all
   }
   
+function createAnimation(){
+  const modal = document.querySelector('.modal');
+  const closeModal = document.querySelector('.modal-button')
+  const textarea = document.querySelector('textarea[name="animation-name"]');
+
+  modal.showModal();
+
+  closeModal.addEventListener('click',()=>{
+    if(textarea.value === "")
+    {
+      console.log("Dialog empty");
+    }else{
+      modal.close();
+
+      socket.emit('createAnimation',textarea.value);
+    }
+  });
+  
+}
