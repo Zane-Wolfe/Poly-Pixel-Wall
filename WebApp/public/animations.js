@@ -4,6 +4,7 @@ var but_arr = [];
 var button = {};
 
 function createButtons(row, col){
+  var count = 0;
     for(var i=0; i<row; i++){
      //Create array of objects button
      but_arr[i] = []
@@ -22,24 +23,25 @@ function createButtons(row, col){
 
          //Dynamically add the buttons in the HTML with the attributes
          newBut.setAttribute("class", "but");
-         newBut.setAttribute("id", "but_"+i+"_"+j);
+         newBut.setAttribute("id", count);
          newBut.setAttribute("onClick", "changeColor(this.id)");
 
          //Insert them into the div
          gridLayout.appendChild(newBut);
-   
+
+         count++;
       }
     }
-    document.getElementById("layout").style.gridTemplateColumns = "repeat("+row+", 60px)";
+    document.getElementById("layout").style.gridTemplateColumns = "repeat("+row+", 40px)";
    }
 
    //Function call
-   createButtons(8,8);
+   createButtons(16,16);
 
    function changeColor(elid){
 
-    var row = parseInt(elid[4]);
-    var col = parseInt(elid[6]);
+    var row = Math.floor(elid/16);
+    var col = elid % 16;
     var color = "#B4A5A5";
   
     console.log(row, col);
@@ -70,8 +72,8 @@ function createButtons(row, col){
     }
   
     //Set each button object to false
-    for(var i=0; i<8; i++){
-      for(var j=0; j<8; j++){
+    for(var i=0; i<16; i++){
+      for(var j=0; j<16; j++){
         but_arr[i][j].active = false;
       }
     }
@@ -108,8 +110,8 @@ function createButtons(row, col){
           elements[i].style.background = color;
       }
 
-      for (let i = 0; i < 8; i++) {
-          for (let j = 0; j < 8; j++) {
+      for (let i = 0; i < 16; i++) {
+          for (let j = 0; j < 16; j++) {
               but_arr[i][j].active = true;
               but_arr[i][j].color = color;
           }
@@ -129,18 +131,13 @@ function createButtons(row, col){
     newList.textContent = 'Frame ' + countAnim;
     ulList.appendChild(newList);
 
-    countAnim++;
-
     //Add attribute "delay" to but_arr object
     let new_but_arr = {...but_arr};
 
     new_but_arr.delay = document.getElementById('delay').value;
 
-    socket.emit('createFrame', new_but_arr, textarea.value);
-  }
-
-  function addDelay(){
-    console.log("add delay");
+    socket.emit('createFrame', new_but_arr, textarea.value, countAnim);
+    countAnim++;
   }
 
   function deleteFrame(){
@@ -179,9 +176,6 @@ function createAnimation(){
       modal.close();
 
       selectAnimation(textarea.value);
-
-      socket.emit('createAnimation',textarea.value);
-  
     }
   });
   
@@ -192,9 +186,10 @@ function editAnimation(){
   const closeModal = document.getElementById('modal-button-edit');
 
   modal.showModal();
-
-  //Grab Table Names From Nodejs and put them as options on the Select Tag
-  fetch('/tables')
+  closeModal.removeEventListener('click', closeModalHandler);
+  
+  //Grab Animation Names From Nodejs and put them as options on the Select Tag
+  fetch('/animations_name')
   .then(response => response.json())
   .then(data => {
     const selectElement = document.getElementById('table-select');
@@ -210,17 +205,34 @@ function editAnimation(){
   })
   .catch(error => console.error('Error:', error));
 
-  closeModal.addEventListener('click',()=>{
-    const select = document.getElementById('table-select');
-    const newTableName = select.options[select.selectedIndex].value
+  closeModal.addEventListener('click', closeModalHandler);
+}
 
-    if(newTableName === ""){
-      console.log("Select empty");
-    }else{
+function closeModalHandler(){
+  const modal = document.getElementById('modal-edit');
+  const select = document.getElementById('table-select');
+  const newAnimationName = select.options[select.selectedIndex].value
+
+  if(newAnimationName === ""){
+    console.log("Select empty");
+  }else{
+    fetch(`/getFrameNumber?animation_name=${newAnimationName}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response failed');
+      }
+      return response.json();
+    })
+    .then(responseData => {
       modal.close();
-      selectAnimation(newTableName);
-    }
-  });
+      console.log("test")
+      selectAnimation(newAnimationName);
+      console.log(responseData);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
 }
 
 function selectAnimation(text){

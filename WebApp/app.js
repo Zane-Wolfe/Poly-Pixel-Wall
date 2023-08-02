@@ -20,28 +20,49 @@ app.get('/',(req,res)=>{
   res.sendFile(path.resolve(__dirname,'index.html'));
 });
 
-app.get('/tables', (req, res) => {
+app.get('/animations_name', (req, res) => {
   const db = new sqlite3.Database('animationsDB.db');
 
-  db.all("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'", (err, rows) => {
-    if (err) {
-      console.error(err.message);
-      res.status(500).send('Error');
-    } else {
-      const tableNames = rows.map(row => row.name);
-      res.json(tableNames);
-    }
+  const query = 'SELECT DISTINCT animation_name FROM animations';
 
-    db.close((err) => {
-      if (err) {
-        console.error('Closing Failed', err.message);
-      } else {
-        console.log('Closed Success');
-      }
-    });
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      throw err;
+    }
+  
+    const uniqueAnimationNames = rows.map(row => row.animation_name);
+
+    console.log(uniqueAnimationNames);
+    res.json(uniqueAnimationNames);
+
+    db.close();
   });
+  
 });
 
+app.get('/getFrameNumber', (req, res) => {
+  const db = new sqlite3.Database('animationsDB.db');
+  const animationName = req.query.animation_name;
+
+  const query = 'SELECT MAX(frame_number) AS last_frame_number FROM animations WHERE animation_name = ?';
+
+  db.get(query, [animationName], (err, row) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    if (!row || row.last_frame_number === null) {
+      res.status(404).json({ error: 'Animation not found' });
+      return;
+    }
+    const lastFrameNumber = row.last_frame_number;
+
+    res.json({ last_frame_number: lastFrameNumber });
+    console.log(lastFrameNumber);
+    db.close();
+  });
+});
+  
 // const parsers = SerialPort.parsers;
 // const parser = new ReadlineParser({ delimeter: "\r\n" });
 
@@ -83,8 +104,8 @@ app.get('/tables', (req, res) => {
 
 //Socket sent by the animation page
 io.on('connection',function(socket){
-  socket.on('createFrame',function(but_arr, text){
-    createFrame(but_arr, text);
+  socket.on('createFrame',function(but_arr, text, frameNumber){
+    createFrame(but_arr, text, frameNumber);
   });
 });
 
@@ -102,16 +123,11 @@ io.on('connection',function(socket){
   });
 });
 
-io.on('connection', function(socket){
-  socket.on('createAnimation', function(name){
-    createTable(name);
-  });
-});
 
-function createFrame(but_arr, text)
+function createFrame(but_arr, text, frameNumber)
 {
   let delay = parseInt(but_arr.delay);
-  const tableName = text;
+  const animationName = text;
   let but_arr_obj = { ...but_arr };
   delete but_arr_obj.delay;
 
@@ -119,8 +135,8 @@ function createFrame(but_arr, text)
 
   const db = new sqlite3.Database('animationsDB.db');
 
-  const query = `INSERT INTO ${tableName} (buttons, delay) VALUES (?,?)`;
-  const values = [but_arr_string, delay];
+  const query = `INSERT INTO animations (animation_name, frame_number, frame_json, delay) VALUES (?,?,?,?)`;
+  const values = [animationName, frameNumber, but_arr_string, delay];
 
   db.run(query, values, function(err) {
     if (err) {
@@ -134,29 +150,5 @@ function createFrame(but_arr, text)
 
 }
 
-function createTable(name)
-{
-  const db = new sqlite3.Database('animationsDB.db');
-  const tableName = name;
-
-  db.serialize(() => {
-    db.run(`
-      CREATE TABLE IF NOT EXISTS ${tableName} (
-        ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        animation_name TEXT,
-        frame_number INTEGER,
-        frame_json TEXT,
-        delay INTEGER
-      )
-    `);
-  });
-
- db.close((err) => {
-  if (err) {
-    return console.error(err.message);
-  }
-});
-  
-}
 
 server.listen(3000);
