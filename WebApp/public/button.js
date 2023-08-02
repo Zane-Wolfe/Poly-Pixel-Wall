@@ -20,25 +20,25 @@ function createButtons(row, col){
       but_arr[i][j] = button;
       //Dynamically add the buttons in the HTML with the attributes
       newBut.setAttribute("class", "but");
-      newBut.setAttribute("id", "but_"+i+"_"+j);
+      newBut.setAttribute("id", count);
       newBut.setAttribute("onClick", "changeColor(this.id)");
+      newBut.setAttribute("draggable", false);
       //Insert them into the div
       gridLayout.appendChild(newBut);
 
       count++;
    }
  }
- document.getElementById("layout").style.gridTemplateColumns = "repeat("+row+", 60px)";
+ document.getElementById("layout").style.gridTemplateColumns = "repeat("+row+", 40px)";
 }
 //Function call
-createButtons(8,8);
+createButtons(16,16);
 
 console.log(but_arr);
 
 function changeColor(elid){
-
-  var row = parseInt(elid[4]);
-  var col = parseInt(elid[6]);
+  var row = Math.floor(elid/16);
+  var col = elid % 16;
   var color = "#B4A5A5";
 
   console.log(row, col);
@@ -71,8 +71,8 @@ function reset(elid){
   }
 
   //Set each button object to false
-  for(var i=0; i<8; i++){
-    for(var j=0; j<8; j++){
+  for(var i=0; i<16; i++){
+    for(var j=0; j<16; j++){
       but_arr[i][j].active = false;
     }
   }
@@ -110,8 +110,8 @@ function applyAll(){
     elements[i].style.background = color;
   }
 
-  for(var i=0; i<8; i++){
-    for(var j=0; j<8; j++){
+  for(var i=0; i<16; i++){
+    for(var j=0; j<16; j++){
       but_arr[i][j].active = true;
       emitSignal("0", i, j, color, true);
     }

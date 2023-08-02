@@ -9,25 +9,30 @@
   height: 800px;
 }
 .but{
-  width: 100%;
-  height: 100%;
+  width: 40px;
+  height: 30px;
   background-color: #B4A5A5;
   border: 2px solid black;
   border-radius: 20px;
+  justify-self: center;
 }
 .but:hover{
   border: 2px solid purple;
 }
 .container-layout{
   height: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+.container-but-function{
+  margin: 100px;
 }
 
 .gridLayout{
   padding: 20px;
-  display: grid;
-  grid-auto-rows:100%;
-  justify-content: center;
   height: auto;
+  display: grid;
 }
 
 ul{

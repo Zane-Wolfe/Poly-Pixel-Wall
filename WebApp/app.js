@@ -143,7 +143,9 @@ function createTable(name)
     db.run(`
       CREATE TABLE IF NOT EXISTS ${tableName} (
         ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        buttons TEXT,
+        animation_name TEXT,
+        frame_number INTEGER,
+        frame_json TEXT,
         delay INTEGER
       )
     `);
