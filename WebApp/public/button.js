@@ -2,6 +2,14 @@ var socket = io();
 const gridLayout = document.getElementById("layout");
 const but_arr = [];
 var button = {};
+var mouseDown = 0;
+
+document.body.onmousedown = function() { 
+  mouseDown = 1;
+}
+document.body.onmouseup = function() {
+  mouseDown = 0;
+}
 
 function createButtons(row, col){
  var count = 0;
@@ -30,7 +38,9 @@ function createButtons(row, col){
    }
  }
  document.getElementById("layout").style.gridTemplateColumns = "repeat("+row+", 40px)";
+ addListeners();
 }
+
 //Function call
 createButtons(16,16);
 
@@ -39,25 +49,17 @@ console.log(but_arr);
 function changeColor(elid){
   var row = Math.floor(elid/16);
   var col = elid % 16;
-  var color = "#B4A5A5";
+ // var color = "#B4A5A5";
 
   console.log(row, col);
   console.log(elid);
   
-  if(isActive(row, col)==false){
-    //Select color from color picker
-    color = document.getElementById('colorPicker').value;
-    document.getElementById(elid).style.background = color ;
-    emitSignal(elid, row, col, color, "true");
-    activateButton(row, col);
+  //Select color from color picker
+  color = document.getElementById('colorPicker').value;
+  document.getElementById(elid).style.background = color ;
+  emitSignal(elid, row, col, color, "true");
+  activateButton(row, col);
 
-// Check if button is NOT active, if true change the background to
-// white
-}else if(isActive(row, col)){
-    document.getElementById(elid).style.background= color;
-    emitSignal(elid, row, col, color, "false");
-    deactivateButton(row, col);
-  }
   console.log(but_arr[row][col].active);
 }
 
@@ -121,3 +123,20 @@ function applyAll(){
 function emitSignal(elid, _row, _col, _color, _status){
   socket.emit('lights', {id:elid, row: _row, col: _col, color: _color, status: _status})
 }
+
+function addListeners(){
+  elements = document.getElementsByClassName("but");
+
+  for(var i=0; i<elements.length; i++){
+    elements[i].addEventListener('mouseover', function(){
+
+      if (mouseDown == 1) {
+
+        changeColor(this.id);
+
+    }
+    }, true);
+  }
+}
+
+pressedMe()
