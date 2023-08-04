@@ -23,16 +23,15 @@ app.get('/',(req,res)=>{
 app.get('/animations_name', (req, res) => {
   const db = new sqlite3.Database('animationsDB.db');
 
-  const query = 'SELECT DISTINCT animation_name FROM animations';
+  const query = 'SELECT AnimationsName FROM animations';
 
   db.all(query, [], (err, rows) => {
     if (err) {
       throw err;
     }
   
-    const uniqueAnimationNames = rows.map(row => row.animation_name);
-
-    console.log(uniqueAnimationNames);
+    const uniqueAnimationNames = rows.map(row => row.AnimationsName);
+    
     res.json(uniqueAnimationNames);
 
     db.close();
@@ -44,23 +43,35 @@ app.get('/getFrameNumber', (req, res) => {
   const db = new sqlite3.Database('animationsDB.db');
   const animationName = req.query.animation_name;
 
-  const query = 'SELECT MAX(frame_number) AS last_frame_number FROM animations WHERE animation_name = ?';
+  const selectQuery = `
+  SELECT f.FrameNumber, f.FrameLights
+  FROM frames AS f
+  JOIN animations AS a ON f.AnimationID = a.ID
+  WHERE a.AnimationsName = ?
+`;
 
-  db.get(query, [animationName], (err, row) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    if (!row || row.last_frame_number === null) {
-      res.status(404).json({ error: 'Animation not found' });
-      return;
-    }
-    const lastFrameNumber = row.last_frame_number;
-
-    res.json({ last_frame_number: lastFrameNumber });
-    console.log(lastFrameNumber);
+db.all(selectQuery, [animationName], (err, rows) => {
+  if (err) {
+    console.error('Error', err.message);
     db.close();
-  });
+    return;
+  }
+
+  if (rows.length === 0) {
+    console.log('Animation Not Found');
+    db.close();
+    return;
+  }
+
+  const frameInfo = rows.map(row => ({
+    FrameNumber: row.FrameNumber,
+    FrameLights: row.FrameLights
+  }));
+
+  res.json(frameInfo);
+
+  db.close();
+});
 });
   
 // const parsers = SerialPort.parsers;
@@ -117,17 +128,39 @@ io.on('connection',function(socket){
 });
 
 io.on('connection',function(socket){
+  socket.on('createAnimation',function(animationName){
+    createAnimation(animationName);
+  });
+});
+
+io.on('connection',function(socket){
   socket.on('saveAll',function(fileNumber){
     console.log("saveAll");
     saveAll();
   });
 });
 
+function createAnimation(animationName){
+  const db = new sqlite3.Database('animationsDB.db');
 
+  const dateToday = new Date().toLocaleDateString();
+  const query = `INSERT INTO animations (animationsName, CreationDate) VALUES (?,?)`;
+  const values = [animationName, dateToday];
+
+  db.run(query, values, function(err) {
+    if (err) {
+      console.error('Error:', err.message);
+    } else {
+      console.log('Success, ID:', this.lastID);
+    }
+
+    db.close();
+  });
+
+}
 function createFrame(but_arr, text, frameNumber)
 {
   let delay = parseInt(but_arr.delay);
-  const animationName = text;
   let but_arr_obj = { ...but_arr };
   delete but_arr_obj.delay;
 
@@ -135,8 +168,12 @@ function createFrame(but_arr, text, frameNumber)
 
   const db = new sqlite3.Database('animationsDB.db');
 
-  const query = `INSERT INTO animations (animation_name, frame_number, frame_json, delay) VALUES (?,?,?,?)`;
-  const values = [animationName, frameNumber, but_arr_string, delay];
+  const query = `INSERT INTO frames (AnimationID, FrameNumber, FrameLights, Delay)
+  SELECT animations.ID, ?, ?, ?
+  FROM animations
+  WHERE animations.AnimationsName = ?`;
+
+  const values = [frameNumber, but_arr_string, delay, text];
 
   db.run(query, values, function(err) {
     if (err) {

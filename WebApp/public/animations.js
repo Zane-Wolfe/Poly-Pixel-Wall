@@ -164,21 +164,27 @@ function createButtons(row, col){
 function createAnimation(){
   const modal = document.getElementById('modal-create');
   const closeModal = document.getElementById('modal-button-create');
-  const textarea = document.getElementById('animation-name');
 
   modal.showModal();
 
-  closeModal.addEventListener('click',()=>{
-    if(textarea.value === "")
-    {
-      console.log("Dialog empty");
-    }else{
-      modal.close();
-
-      selectAnimation(textarea.value);
-    }
-  });
+  closeModal.removeEventListener('click', closeModalCreateHandler);
+  closeModal.addEventListener('click', closeModalCreateHandler);
   
+}
+
+function closeModalCreateHandler(){
+  const modal = document.getElementById('modal-create');
+  const textarea = document.getElementById('animation-name');
+
+  if(textarea.value === "")
+  {
+    console.log("Dialog empty");
+  }else{
+    modal.close();
+
+    socket.emit('createAnimation', textarea.value);
+    selectAnimation(textarea.value);
+  }
 }
 
 function editAnimation(){
@@ -187,7 +193,7 @@ function editAnimation(){
 
   modal.showModal();
   closeModal.removeEventListener('click', closeModalHandler);
-  
+
   //Grab Animation Names From Nodejs and put them as options on the Select Tag
   fetch('/animations_name')
   .then(response => response.json())
@@ -196,10 +202,10 @@ function editAnimation(){
 
     selectElement.innerHTML = '';
 
-    data.forEach(tableName => {
+    data.forEach(animationName => {
       const newOption = document.createElement('option');
-      newOption.value = tableName;
-      newOption.textContent = tableName;
+      newOption.value = animationName;
+      newOption.textContent = animationName;
       selectElement.appendChild(newOption);
     });
   })
@@ -224,10 +230,17 @@ function closeModalHandler(){
       return response.json();
     })
     .then(responseData => {
-      modal.close();
-      console.log("test")
       selectAnimation(newAnimationName);
+
       console.log(responseData);
+      // var ulList = document.getElementById("list-of-anim");
+      // var newList = document.createElement('li');
+
+      // newList.setAttribute("class", "li-anim");
+      // newList.textContent = 'Frame ' + 
+      // ulList.appendChild(newList);
+
+      modal.close();
     })
     .catch(error => {
       console.error('Error:', error);

@@ -1,0 +1,9 @@
+-- SQLite
+CREATE TABLE frames(
+ID INTEGER PRIMARY KEY AUTOINCREMENT,
+AnimationID INTEGER,
+FrameNumber INTEGER,
+FrameLights TEXT,
+delay INTEGER,
+FOREIGN KEY (AnimationID) REFERENCES animations(ID)
+)
