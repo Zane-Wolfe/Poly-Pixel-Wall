@@ -44,7 +44,7 @@ app.get('/getFrameNumber', (req, res) => {
   const animationName = req.query.animation_name;
 
   const selectQuery = `
-  SELECT f.FrameNumber, f.FrameLights
+  SELECT f.FrameNumber, f.FrameLights, f.delay
   FROM frames AS f
   JOIN animations AS a ON f.AnimationID = a.ID
   WHERE a.AnimationsName = ?
@@ -65,7 +65,8 @@ db.all(selectQuery, [animationName], (err, rows) => {
 
   const frameInfo = rows.map(row => ({
     FrameNumber: row.FrameNumber,
-    FrameLights: row.FrameLights
+    FrameLights: row.FrameLights,
+    FrameDelay: row.delay
   }));
 
   res.json(frameInfo);
@@ -140,6 +141,12 @@ io.on('connection',function(socket){
   });
 });
 
+io.on('connection',function(socket){
+  socket.on('saveChanges',function(but_arr, animationName, frameNumber, delay){
+    saveChanges(but_arr, animationName, frameNumber, delay);
+  });
+});
+
 function createAnimation(animationName){
   const db = new sqlite3.Database('animationsDB.db');
 
@@ -187,5 +194,29 @@ function createFrame(but_arr, text, frameNumber)
 
 }
 
+function saveChanges(but_arr_obj, animationName, frameNumber, delay)
+{
+  let but_arr_string = JSON.stringify(but_arr_obj);
+
+  const db = new sqlite3.Database('animationsDB.db');
+
+  //Substitute for JOIN?
+  const query = `UPDATE frames
+  SET FrameLights = ?,
+      delay = ?
+  WHERE FrameNumber = ? AND AnimationID = (
+    SELECT ID FROM animations WHERE AnimationsName = ?
+  );
+`;
+
+  db.run(query, [but_arr_string, delay, frameNumber, animationName], (err) => {
+    if (err) {
+      console.error('Error:', err);
+    } else {
+      console.log('Update Sucessful');
+    }
+    db.close();
+  });
+}
 
 server.listen(3000);

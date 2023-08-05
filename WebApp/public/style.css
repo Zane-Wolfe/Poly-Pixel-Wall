@@ -165,7 +165,7 @@ nav{
 /*-------------------------------------------*/ 
 
 .container-anim{
-  border: 3px solid purple;
+  border: 3px solid #3C415C;
   margin-top: 10px;
   height: 100%;
   min-width: 100px;
@@ -204,6 +204,12 @@ nav{
   border: 3px solid #3C415C;
   justify-content: center;
   align-items: center;
+}
+
+.li-anim:hover {
+  color: purple; 
+  cursor: pointer;
+  border-color: purple;
 }
 
 .container-edit {

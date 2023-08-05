@@ -13,7 +13,7 @@ function createButtons(row, col){
    
          //Create attributes for the object button
          button = {
-         id: "but_"+ i + "_" + j,
+         id: count,
          active: false,
          opacity: 1,
          color: "#B4A5A5"
@@ -50,7 +50,7 @@ function createButtons(row, col){
     if(isActive(row, col)==false){
       //Select color from color picker
       color = document.getElementById('colorPicker').value;
-      document.getElementById(elid).style.background = color ;
+      document.getElementById(elid).style.background = color;
       activateButton(row, col);
   
   // Check if button is NOT active, if true change the background to white
@@ -122,7 +122,7 @@ function createButtons(row, col){
 
   var countAnim = 0;
 
-  function saveFrame(){
+  function newFrame(){
     var ulList = document.getElementById("list-of-anim");
     var newList = document.createElement('li');
     const textarea = document.querySelector('textarea[name="animation-name"]');
@@ -157,7 +157,7 @@ function createButtons(row, col){
       ulList.removeChild(ulList.firstChild);
     }
     countAnim = 0;
-    
+    document.getElementById('anim-selected').textContent = "No Animation Selected";
     //Logic here to send socket for saving all
   }
 
@@ -233,12 +233,19 @@ function closeModalHandler(){
       selectAnimation(newAnimationName);
 
       console.log(responseData);
-      // var ulList = document.getElementById("list-of-anim");
-      // var newList = document.createElement('li');
+      responseData.forEach(frames =>{
 
-      // newList.setAttribute("class", "li-anim");
-      // newList.textContent = 'Frame ' + 
-      // ulList.appendChild(newList);
+      var ulList = document.getElementById("list-of-anim");
+      var newList = document.createElement('li');
+
+      newList.setAttribute("class", "li-anim");
+      newList.textContent = 'Frame ' + frames.FrameNumber;
+      newList.addEventListener('click', function() {
+        selectFrameForEdition(frames.FrameNumber, frames.FrameLights, frames.FrameDelay);
+      });
+      ulList.appendChild(newList);
+
+      });
 
       modal.close();
     })
@@ -256,5 +263,48 @@ function selectAnimation(text){
   buttons.forEach(button => {
     button.disabled = false;
   });
+
+}
+
+function selectFrameForEdition(frameNumber, frameInfo, delay){
+  const frameInfoJSON = JSON.parse(frameInfo);
+  console.log(frameInfoJSON);
+  console.log(delay);
+  document.getElementById('delay').value = delay;
+
+  for(let array in frameInfoJSON)
+  {
+    for(let button in frameInfoJSON[array])
+    {
+      let elid = frameInfoJSON[array][button].id;
+      let activeStatus = frameInfoJSON[array][button].active;
+      let opacity = frameInfoJSON[array][button].opacity;
+      let color = frameInfoJSON[array][button].color;
+
+      but_arr[array][button].id = elid;
+      but_arr[array][button].active = activeStatus;
+      but_arr[array][button].opacity = opacity;
+      but_arr[array][button].color = color;
+
+      document.getElementById(elid).style.background =  color;
+
+    }
+  }
+
+  const saveChangesButton = document.getElementById('saveChanges');
+
+  saveChangesButton.removeEventListener('click',function(){
+    saveChanges(frameNumber)});
+  saveChangesButton.addEventListener('click', function(){
+    saveChanges(frameNumber);
+  });
+}
+
+function saveChanges(frameNumber){
+  const animationName = document.getElementById('anim-selected').textContent;
+  const newDelay = document.getElementById('delay').value;
+  socket.emit('saveChanges', but_arr, animationName, frameNumber, newDelay);
+
+  
 
 }
