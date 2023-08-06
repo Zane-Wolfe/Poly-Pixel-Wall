@@ -218,6 +218,7 @@ function closeModalHandler(){
   const modal = document.getElementById('modal-edit');
   const select = document.getElementById('table-select');
   const newAnimationName = select.options[select.selectedIndex].value
+  const ulList = document.getElementById("list-of-anim");
 
   if(newAnimationName === ""){
     console.log("Select empty");
@@ -233,17 +234,24 @@ function closeModalHandler(){
       selectAnimation(newAnimationName);
 
       console.log(responseData);
+
+      ulList.innerHTML = "";
+
       responseData.forEach(frames =>{
+        const newList = document.createElement('li');
+        const liId = "li-anim-" + frames.FrameNumber;
 
-      var ulList = document.getElementById("list-of-anim");
-      var newList = document.createElement('li');
+        let selectFrameForEditionFunction = function(){
+          selectFrameForEdition(frames.FrameNumber, frames.FrameLights, frames.FrameDelay);
+        }
+        newList.setAttribute("class", "li-anim");
+        newList.setAttribute("id", liId);
+        newList.textContent = 'Frame ' + frames.FrameNumber;
+        
+        newList.removeEventListener('click',selectFrameForEditionFunction);
+        newList.addEventListener('click', selectFrameForEditionFunction);
 
-      newList.setAttribute("class", "li-anim");
-      newList.textContent = 'Frame ' + frames.FrameNumber;
-      newList.addEventListener('click', function() {
-        selectFrameForEdition(frames.FrameNumber, frames.FrameLights, frames.FrameDelay);
-      });
-      ulList.appendChild(newList);
+        ulList.appendChild(newList);
 
       });
 
@@ -266,10 +274,50 @@ function selectAnimation(text){
 
 }
 
+function saveChanges(frameNumber){
+  const animationName = document.getElementById('anim-selected').textContent;
+  const newDelay = document.getElementById('delay').value;
+  const ulList = document.getElementById("list-of-anim");
+  socket.emit('saveChanges', but_arr, animationName, frameNumber, newDelay, (callback) => {
+    fetch(`/getFrameNumber?animation_name=${animationName}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response failed');
+      }
+      return response.json();
+    })
+    .then(responseData => {
+      ulList.innerHTML = "";
+
+      responseData.forEach(frames =>{
+        const newList = document.createElement('li');
+        const liId = "li-anim-" + frames.FrameNumber;
+
+        let selectFrameForEditionFunction = function(){
+          selectFrameForEdition(frames.FrameNumber, frames.FrameLights, frames.FrameDelay);
+        }
+        newList.setAttribute("class", "li-anim");
+        newList.setAttribute("id", liId);
+        newList.textContent = 'Frame ' + frames.FrameNumber;
+        
+        newList.removeEventListener('click', selectFrameForEditionFunction);
+        newList.addEventListener('click', selectFrameForEditionFunction);
+
+        ulList.appendChild(newList);
+
+      });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  });
+}
+
 function selectFrameForEdition(frameNumber, frameInfo, delay){
   const frameInfoJSON = JSON.parse(frameInfo);
-  console.log(frameInfoJSON);
+  const saveChangesButton = document.getElementById('saveChanges');
   console.log(delay);
+
   document.getElementById('delay').value = delay;
 
   for(let array in frameInfoJSON)
@@ -290,21 +338,8 @@ function selectFrameForEdition(frameNumber, frameInfo, delay){
 
     }
   }
-
-  const saveChangesButton = document.getElementById('saveChanges');
-
-  saveChangesButton.removeEventListener('click',function(){
-    saveChanges(frameNumber)});
-  saveChangesButton.addEventListener('click', function(){
-    saveChanges(frameNumber);
-  });
-}
-
-function saveChanges(frameNumber){
-  const animationName = document.getElementById('anim-selected').textContent;
-  const newDelay = document.getElementById('delay').value;
-  socket.emit('saveChanges', but_arr, animationName, frameNumber, newDelay);
-
   
-
+  saveChangesButton.onclick = function() {
+    saveChanges(frameNumber);
+  }
 }
