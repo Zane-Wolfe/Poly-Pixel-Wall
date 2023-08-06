@@ -49,22 +49,32 @@ console.log(but_arr);
 function changeColor(elid){
   var row = Math.floor(elid/16);
   var col = elid % 16;
+  const buttonEraser = document.getElementsByName('eraser')[0];
+  let color = document.getElementById('colorPicker').value;
  // var color = "#B4A5A5";
 
   console.log(row, col);
   console.log(elid);
   
   //Select color from color picker
-  color = document.getElementById('colorPicker').value;
+  if(buttonEraser.id == "but-eraser-clicked"){
+    color = "#B4A5A5";
+    deactivateButton(row,col);
+
+  }else if(buttonEraser.id == "but-eraser-default"){
+    color = document.getElementById('colorPicker').value;
+    activateButton(row, col);
+  }
+
   document.getElementById(elid).style.background = color ;
+
   emitSignal(elid, row, col, color, "true");
-  activateButton(row, col);
 
   console.log(but_arr[row][col].active);
 }
 
 //Function to Reset all the buttons
-function reset(elid){
+function reset(){
 
   elements = document.getElementsByClassName("but");
 
@@ -139,4 +149,14 @@ function addListeners(){
   }
 }
 
-pressedMe()
+function eraser(elid){
+  const eraserButton = document.getElementById(elid);
+
+  if(elid == "but-eraser-default"){
+    eraserButton.removeAttribute('id');
+    eraserButton.setAttribute("id", "but-eraser-clicked");
+  }else if(elid == "but-eraser-clicked"){
+    eraserButton.removeAttribute('id');
+    eraserButton.setAttribute("id", "but-eraser-default");
+  }
+}
