@@ -42,7 +42,7 @@ app.get('/animations_name', (req, res) => {
 app.get('/getFrameNumber', (req, res) => {
   const db = new sqlite3.Database('animationsDB.db');
   const animationName = req.query.animation_name;
-  console.log("fetchchch");
+
   const selectQuery = `
   SELECT f.FrameNumber, f.FrameLights, f.delay
   FROM frames AS f
@@ -142,7 +142,9 @@ io.on('connection',function(socket){
 io.on('connection',function(socket){
   socket.on('saveChanges',function(but_arr, animationName, frameNumber, delay, callback){
     saveChanges(but_arr, animationName, frameNumber, delay);
-    callback('Changes saved successfully');
+    setTimeout(() => {
+      callback('Changes saved successfully');
+    }, 50);
   });
 });
 

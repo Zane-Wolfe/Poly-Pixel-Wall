@@ -118,14 +118,11 @@ function createButtons(row, col){
       }
   }
 
-
-
-  var countAnim = 0;
-
   function newFrame(){
-    var ulList = document.getElementById("list-of-anim");
+    const ulList = document.getElementById("list-of-anim");
     var newList = document.createElement('li');
     const textarea = document.querySelector('textarea[name="animation-name"]');
+    const countAnim = ulList.children.length;
 
     newList.setAttribute("class", "li-anim");
     newList.textContent = 'Frame ' + countAnim;
@@ -137,7 +134,6 @@ function createButtons(row, col){
     new_but_arr.delay = document.getElementById('delay').value;
 
     socket.emit('createFrame', new_but_arr, textarea.value, countAnim);
-    countAnim++;
   }
 
   function deleteFrame(){
@@ -156,8 +152,8 @@ function createButtons(row, col){
     while(ulList.firstChild){
       ulList.removeChild(ulList.firstChild);
     }
-    countAnim = 0;
-    document.getElementById('anim-selected').textContent = "No Animation Selected";
+    document.getElementById('anim-selected').textContent = "No Animation Selected"; 
+    selectAnimation("No Animation Selected", true);
     //Logic here to send socket for saving all
   }
 
@@ -173,8 +169,10 @@ function createAnimation(){
 }
 
 function closeModalCreateHandler(){
+  const ulList = document.getElementById("list-of-anim");
   const modal = document.getElementById('modal-create');
   const textarea = document.getElementById('animation-name');
+
 
   if(textarea.value === "")
   {
@@ -183,7 +181,8 @@ function closeModalCreateHandler(){
     modal.close();
 
     socket.emit('createAnimation', textarea.value);
-    selectAnimation(textarea.value);
+    ulList.innerHTML = "";
+    selectAnimation(textarea.value, false);
   }
 }
 
@@ -231,7 +230,7 @@ function closeModalHandler(){
       return response.json();
     })
     .then(responseData => {
-      selectAnimation(newAnimationName);
+      selectAnimation(newAnimationName, false);
 
       console.log(responseData);
 
@@ -263,13 +262,13 @@ function closeModalHandler(){
   }
 }
 
-function selectAnimation(text){
+function selectAnimation(text, status){
   document.getElementById('anim-selected').innerHTML = text;
 
   const buttons = document.querySelectorAll('.but-function-anim');
 
   buttons.forEach(button => {
-    button.disabled = false;
+    button.disabled = status;
   });
 
 }
