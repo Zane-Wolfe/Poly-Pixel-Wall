@@ -63,7 +63,7 @@ function createButtons(row, col){
   }
   
   //Function to Reset all the buttons
-  function reset(elid){
+  function reset(){
   
     elements = document.getElementsByClassName("but");
   
@@ -194,7 +194,7 @@ function editAnimation(){
   closeModal.removeEventListener('click', closeModalHandler);
 
   //Grab Animation Names From Nodejs and put them as options on the Select Tag
-  fetch('/animations_name')
+  fetch('/routes/animations_name')
   .then(response => response.json())
   .then(data => {
     const selectElement = document.getElementById('table-select');
@@ -222,7 +222,7 @@ function closeModalHandler(){
   if(newAnimationName === ""){
     console.log("Select empty");
   }else{
-    fetch(`/getFrameNumber?animation_name=${newAnimationName}`)
+    fetch(`/routes/getFrameNumber?animation_name=${newAnimationName}`)
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response failed');
@@ -278,7 +278,7 @@ function saveChanges(frameNumber){
   const newDelay = document.getElementById('delay').value;
   const ulList = document.getElementById("list-of-anim");
   socket.emit('saveChanges', but_arr, animationName, frameNumber, newDelay, (callback) => {
-    fetch(`/getFrameNumber?animation_name=${animationName}`)
+    fetch(`/routes/getFrameNumber?animation_name=${animationName}`)
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response failed');

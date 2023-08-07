@@ -4,75 +4,24 @@ var http = require('http');
 const SerialPort = require("serialport");
 const { ReadlineParser } = require("@serialport/parser-readline");
 const filePath = path.join(__dirname, '../public/');
-
 const sqlite3 = require('sqlite3').verbose();
-
-
 const express = require('express');
 const { Socket } = require('socket.io');
 const { create } = require('domain');
 const { stringify } = require('querystring');
 var app = module.exports.app = express();
-app.use(express.static('./public'));
-var server = http.createServer(app);
+const animationCreator = require ('./routes/animationCreator.js');
 
-app.get('/',(req,res)=>{
+app.use('/routes', animationCreator);
+app.use('/controller', express.static(__dirname + '/controller'));
+app.use(express.static('./view'));
+
+app.get('/view',(req,res)=>{
   res.sendFile(path.resolve(__dirname,'index.html'));
 });
 
-app.get('/animations_name', (req, res) => {
-  const db = new sqlite3.Database('animationsDB.db');
+var server = http.createServer(app);
 
-  const query = 'SELECT AnimationsName FROM animations';
-
-  db.all(query, [], (err, rows) => {
-    if (err) {
-      throw err;
-    }
-  
-    const uniqueAnimationNames = rows.map(row => row.AnimationsName);
-    
-    res.json(uniqueAnimationNames);
-
-    db.close();
-  });
-  
-});
-
-app.get('/getFrameNumber', (req, res) => {
-  const db = new sqlite3.Database('animationsDB.db');
-  const animationName = req.query.animation_name;
-
-  const selectQuery = `
-  SELECT f.FrameNumber, f.FrameLights, f.delay
-  FROM frames AS f
-  JOIN animations AS a ON f.AnimationID = a.ID
-  WHERE a.AnimationsName = ?
-`;
-
-db.all(selectQuery, [animationName], (err, rows) => {
-  if (err) {
-    console.error('Error', err.message);
-    db.close();
-    return;
-  }
-
-  if (rows.length === 0) {
-    console.log('Animation Not Found');
-    db.close();
-    return;
-  }
-
-  const frameInfo = rows.map(row => ({
-    FrameNumber: row.FrameNumber,
-    FrameLights: row.FrameLights,
-    FrameDelay: row.delay
-  }));
-  res.json(frameInfo);
-  db.close();
-});
-});
-  
 // const parsers = SerialPort.parsers;
 // const parser = new ReadlineParser({ delimeter: "\r\n" });
 
@@ -162,7 +111,6 @@ function createAnimation(animationName){
       console.log('Success, ID:', this.lastID);
     }
 
-    db.close();
   });
 
 }
@@ -190,7 +138,6 @@ function createFrame(but_arr, text, frameNumber)
       console.log('Success, ID:', this.lastID);
     }
 
-    db.close();
   });
 
 }
@@ -216,7 +163,6 @@ function saveChanges(but_arr_obj, animationName, frameNumber, delay)
     } else {
       console.log('Update Sucessful');
     }
-    db.close();
   });
 }
 

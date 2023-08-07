@@ -1,0 +1,6 @@
+-- SQLite
+CREATE TABLE animations(
+ID INTEGER PRIMARY KEY AUTOINCREMENT,
+TEXT AnimationsName,
+DATE CreationDate
+)
