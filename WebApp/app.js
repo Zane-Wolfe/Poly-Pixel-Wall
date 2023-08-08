@@ -13,12 +13,12 @@ var app = module.exports.app = express();
 const animationCreator = require ('./routes/animationCreator.js');
 
 app.use('/routes', animationCreator);
-app.use('/controller', express.static(__dirname + '/controller'));
-app.use(express.static('./view'));
+app.use(express.static('./public'));
 
-app.get('/view',(req,res)=>{
+app.get('/',(req,res)=>{
   res.sendFile(path.resolve(__dirname,'index.html'));
 });
+
 
 var server = http.createServer(app);
 
@@ -63,8 +63,8 @@ var server = http.createServer(app);
 
 //Socket sent by the animation page
 io.on('connection',function(socket){
-  socket.on('createFrame',function(but_arr, text, frameNumber){
-    createFrame(but_arr, text, frameNumber);
+  socket.on('createFrame',function(but_arr, text, frameNumber, delay){
+    createFrame(but_arr, text, frameNumber, delay);
   });
 });
 
@@ -114,13 +114,8 @@ function createAnimation(animationName){
   });
 
 }
-function createFrame(but_arr, text, frameNumber)
-{
-  let delay = parseInt(but_arr.delay);
-  let but_arr_obj = { ...but_arr };
-  delete but_arr_obj.delay;
-
-  let but_arr_string = JSON.stringify(but_arr_obj);
+function createFrame(but_arr, text, frameNumber, delay){
+  let but_arr_string = JSON.stringify(but_arr);
 
   const db = new sqlite3.Database('animationsDB.db');
 

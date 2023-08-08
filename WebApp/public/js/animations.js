@@ -128,12 +128,9 @@ function createButtons(row, col){
     newList.textContent = 'Frame ' + countAnim;
     ulList.appendChild(newList);
 
-    //Add attribute "delay" to but_arr object
-    let new_but_arr = {...but_arr};
+    const delay = document.getElementById('delay').value;
 
-    new_but_arr.delay = document.getElementById('delay').value;
-
-    socket.emit('createFrame', new_but_arr, textarea.value, countAnim);
+    socket.emit('createFrame', new_but_arr, textarea.value, countAnim, delay);
   }
 
   function deleteFrame(){

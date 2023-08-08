@@ -1,47 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../model/db.js');
+const animations = require ('../model/animationsHandler.js');
 
-router.get('/animations_name', (req, res) => {
-    const query = 'SELECT AnimationsName FROM animations';
-    db.all(query, [], (err, rows) => {
-      if (err) {
-        throw err;
-      }
-      const uniqueAnimationNames = rows.map(row => row.AnimationsName);
-      
-      res.json(uniqueAnimationNames);
-    });
-});
-
-router.get('/getFrameNumber', (req, res) => {
-    const animationName = req.query.animation_name;
-
-    const selectQuery = `
-    SELECT f.FrameNumber, f.FrameLights, f.delay
-    FROM frames AS f
-    JOIN animations AS a ON f.AnimationID = a.ID
-    WHERE a.AnimationsName = ?
-    `;
-
-    db.all(selectQuery, [animationName], (err, rows) => {
-    if (err) {
-        console.error('Error', err.message);
-        return;
+//Get request from animations page and ask DB to retrieve all animations names
+router.get('/animations_name', async (req, res) => {
+    try {
+      const names = await animations.getNames();
+      res.json(names);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Internal Server Error');
     }
-
-    if (rows.length === 0) {
-        console.log('Animation Not Found');
-        return;
+  });
+  
+//Get request from animations page and ask DB to retrieve all frames corresponding to the name of the animation specified
+router.get('/getFrameNumber', async (req, res) => {
+    try{
+        const frameInfo = await animations.getFrames(req.query.animation_name);
+        res.json(frameInfo);
+    } catch(err){
+        console.error(err);
+        res.status(500).send('Internal Server Error');
     }
-
-    const frameInfo = rows.map(row => ({
-        FrameNumber: row.FrameNumber,
-        FrameLights: row.FrameLights,
-        FrameDelay: row.delay
-    }));
-    res.json(frameInfo);
-    });
 });
 
 module.exports = router;
