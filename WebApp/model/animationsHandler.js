@@ -48,3 +48,60 @@ exports.getFrames = (newAnimationName) => {
         });
     });
   }
+
+exports.createFrame = (but_arr, text, frameNumber, delay) => {
+  let but_arr_string = JSON.stringify(but_arr);
+
+  const query = `INSERT INTO frames (AnimationID, FrameNumber, FrameLights, Delay)
+  SELECT animations.ID, ?, ?, ?
+  FROM animations
+  WHERE animations.AnimationsName = ?`;
+
+  const values = [frameNumber, but_arr_string, delay, text];
+
+  db.run(query, values, function(err) {
+    if (err) {
+      console.error('Error:', err.message);
+    } else {
+      console.log('Success, ID:', this.lastID);
+    }
+
+  });
+  
+}
+
+exports.createAnimation = (animationName) => {
+  const dateToday = new Date().toLocaleDateString();
+  const query = `INSERT INTO animations (animationsName, CreationDate) VALUES (?,?)`;
+  const values = [animationName, dateToday];
+
+  db.run(query, values, function(err) {
+    if (err) {
+      console.error('Error:', err.message);
+    } else {
+      console.log('Success, ID:', this.lastID);
+    }
+
+  });
+
+}
+ 
+exports.saveChanges = (but_arr_obj, animationName, frameNumber, delay) => {
+  let but_arr_string = JSON.stringify(but_arr_obj);
+
+  const query = `UPDATE frames
+  SET FrameLights = ?,
+      delay = ?
+  WHERE FrameNumber = ? AND AnimationID = (
+    SELECT ID FROM animations WHERE AnimationsName = ?
+  );
+`;
+
+  db.run(query, [but_arr_string, delay, frameNumber, animationName], (err) => {
+    if (err) {
+      console.error('Error:', err);
+    } else {
+      console.log('Update Sucessful');
+    }
+  });
+}

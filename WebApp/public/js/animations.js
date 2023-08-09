@@ -123,14 +123,38 @@ function createButtons(row, col){
     var newList = document.createElement('li');
     const textarea = document.querySelector('textarea[name="animation-name"]');
     const countAnim = ulList.children.length;
-
+    const name = textarea.value;
     newList.setAttribute("class", "li-anim");
     newList.textContent = 'Frame ' + countAnim;
     ulList.appendChild(newList);
 
     const delay = document.getElementById('delay').value;
 
-    socket.emit('createFrame', new_but_arr, textarea.value, countAnim, delay);
+    const dataToSend = {
+      but_arr: but_arr,
+      name: name,
+      frameNumber: countAnim,
+      delay: delay
+    };
+    fetch('/routes/createFrame', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(dataToSend)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('response:', data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
   }
 
   function deleteFrame(){
@@ -151,7 +175,6 @@ function createButtons(row, col){
     }
     document.getElementById('anim-selected').textContent = "No Animation Selected"; 
     selectAnimation("No Animation Selected", true);
-    //Logic here to send socket for saving all
   }
 
 function createAnimation(){
@@ -169,17 +192,36 @@ function closeModalCreateHandler(){
   const ulList = document.getElementById("list-of-anim");
   const modal = document.getElementById('modal-create');
   const textarea = document.getElementById('animation-name');
+  const animationName = textarea.value;
 
-
-  if(textarea.value === "")
+  if(animationName === "")
   {
     console.log("Dialog empty");
   }else{
     modal.close();
 
-    socket.emit('createAnimation', textarea.value);
+    fetch('/routes/createAnimation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({animationName: animationName})
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('response:', data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+
     ulList.innerHTML = "";
-    selectAnimation(textarea.value, false);
+    selectAnimation(animationName, false);
   }
 }
 
@@ -270,42 +312,53 @@ function selectAnimation(text, status){
 
 }
 
-function saveChanges(frameNumber){
+function saveChanges(frameNumber) {
   const animationName = document.getElementById('anim-selected').textContent;
   const newDelay = document.getElementById('delay').value;
   const ulList = document.getElementById("list-of-anim");
-  socket.emit('saveChanges', but_arr, animationName, frameNumber, newDelay, (callback) => {
-    fetch(`/routes/getFrameNumber?animation_name=${animationName}`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response failed');
+
+  const dataToSend = {
+    but_arr: but_arr,
+    animationName: animationName,
+    frameNumber: frameNumber,
+    newDelay: newDelay
+  };
+
+  fetch('/routes/saveChanges', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(dataToSend)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response failed');
+    }
+    return response.json();
+  })
+  .then(responseData => {
+    ulList.innerHTML = "";
+
+    responseData.forEach(frames => {
+      const newList = document.createElement('li');
+      const liId = "li-anim-" + frames.FrameNumber;
+
+      let selectFrameForEditionFunction = function(){
+        selectFrameForEdition(frames.FrameNumber, frames.FrameLights, frames.FrameDelay);
       }
-      return response.json();
-    })
-    .then(responseData => {
-      ulList.innerHTML = "";
+      newList.setAttribute("class", "li-anim");
+      newList.setAttribute("id", liId);
+      newList.textContent = 'Frame ' + frames.FrameNumber;
 
-      responseData.forEach(frames =>{
-        const newList = document.createElement('li');
-        const liId = "li-anim-" + frames.FrameNumber;
+      newList.removeEventListener('click', selectFrameForEditionFunction);
+      newList.addEventListener('click', selectFrameForEditionFunction);
 
-        let selectFrameForEditionFunction = function(){
-          selectFrameForEdition(frames.FrameNumber, frames.FrameLights, frames.FrameDelay);
-        }
-        newList.setAttribute("class", "li-anim");
-        newList.setAttribute("id", liId);
-        newList.textContent = 'Frame ' + frames.FrameNumber;
-        
-        newList.removeEventListener('click', selectFrameForEditionFunction);
-        newList.addEventListener('click', selectFrameForEditionFunction);
-
-        ulList.appendChild(newList);
-
-      });
-    })
-    .catch(error => {
-      console.error('Error:', error);
+      ulList.appendChild(newList);
     });
+  })
+  .catch(error => {
+    console.error('Error:', error);
   });
 }
 
