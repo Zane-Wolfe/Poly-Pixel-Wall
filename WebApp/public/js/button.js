@@ -93,17 +93,8 @@ function reset(){
 
 //Function to Check if the button is active
 function isActive(row, col){
-
-  if(but_arr[row][col].active == true){
-    console.log("is Active");
-    return true;
-
-}else if(but_arr[row][col].active == false){
-    console.log("Is not active");
-    return false;
-    
-  }
   console.log(but_arr[row][col].active);
+  return but_arr[row][col].active;
 }
 
 function activateButton(row, col){

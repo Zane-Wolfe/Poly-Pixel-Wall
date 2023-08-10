@@ -1,9 +1,8 @@
-var socket = io();
-const gridLayout = document.getElementById("layout");
 var but_arr = [];
 var button = {};
 
 function createButtons(row, col){
+  const gridLayout = document.getElementById("layout");
   var count = 0;
     for(var i=0; i<row; i++){
      //Create array of objects button
@@ -34,149 +33,143 @@ function createButtons(row, col){
     }
     document.getElementById("layout").style.gridTemplateColumns = "repeat("+row+", 40px)";
    }
-
    //Function call
-   createButtons(16,16);
+  createButtons(16,16);
 
-   function changeColor(elid){
+function changeColor(elid){
 
-    var row = Math.floor(elid/16);
-    var col = elid % 16;
-    var color = "#B4A5A5";
-  
-    console.log(row, col);
-    console.log(elid);
-    
-    if(isActive(row, col)==false){
-      //Select color from color picker
-      color = document.getElementById('colorPicker').value;
-      document.getElementById(elid).style.background = color;
-      activateButton(row, col);
-  
+  var row = Math.floor(elid/16);
+  var col = elid % 16;
+  var color = "#B4A5A5";
+
+  console.log(row, col);
+  console.log(elid);
+
+  if(isActive(row, col)==false){
+    //Select color from color picker
+    color = document.getElementById('colorPicker').value;
+    document.getElementById(elid).style.background = color;
+    activateButton(row, col);
+
   // Check if button is NOT active, if true change the background to white
   }else if(isActive(row, col)){
-      document.getElementById(elid).style.background= color;
-      deactivateButton(row, col);
+    document.getElementById(elid).style.background= color;
+    deactivateButton(row, col);
+  }
+  console.log(but_arr[row][col].active);
+  but_arr[row][col].color = color;
+}
+
+//Function to Reset all the buttons
+function reset(){
+
+  elements = document.getElementsByClassName("but");
+
+  for(var i=0; i<elements.length; i++){
+    elements[i].style.background = "#B4A5A5";
+  }
+
+  //Set each button object to false
+  for(var i=0; i<16; i++){
+    for(var j=0; j<16; j++){
+      but_arr[i][j].active = false;
     }
-    console.log(but_arr[row][col].active);
-    but_arr[row][col].color = color;
   }
-  
-  //Function to Reset all the buttons
-  function reset(){
-  
-    elements = document.getElementsByClassName("but");
-  
-    for(var i=0; i<elements.length; i++){
-      elements[i].style.background = "#B4A5A5";
+
+}
+
+//Function to Check if the button is active
+function isActive(row, col){
+  console.log(but_arr[row][col].active);
+  return but_arr[row][col].active;
+}
+
+function activateButton(row, col){
+  but_arr[row][col].active = true;
+}
+
+function deactivateButton(row, col){
+  but_arr[row][col].active = false;
+}
+
+//Apply the selected color to all buttons
+function applyAll() {
+    let elements = document.getElementsByClassName("but");
+    let color = document.getElementById('colorPicker').value;
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].style.background = color;
     }
-  
-    //Set each button object to false
-    for(var i=0; i<16; i++){
-      for(var j=0; j<16; j++){
-        but_arr[i][j].active = false;
-      }
+
+    for (let i = 0; i < 16; i++) {
+        for (let j = 0; j < 16; j++) {
+            but_arr[i][j].active = true;
+            but_arr[i][j].color = color;
+        }
     }
-  
-  }
-  
-  //Function to Check if the button is active
-  function isActive(row, col){
-  
-    if(but_arr[row][col].active === true){
-      console.log("is Active");
-      return true;
-  
-  }else if(but_arr[row][col].active === false){
-      console.log("Is not active");
-      return false;
-      
+}
+
+//When the New Frame button is clicked, create a new frame box on the page and send the frame information to database
+function newFrame(){
+  const ulList = document.getElementById("list-of-anim");
+  var newList = document.createElement('li');
+  const textarea = document.querySelector('textarea[name="animation-name"]');
+  const countAnim = ulList.children.length;
+  const name = textarea.value;
+  newList.setAttribute("class", "li-anim");
+  newList.textContent = 'Frame ' + countAnim;
+  ulList.appendChild(newList);
+
+  const delay = document.getElementById('delay').value;
+
+  const dataToSend = {
+    but_arr: but_arr,
+    name: name,
+    frameNumber: countAnim,
+    delay: delay
+  };
+  fetch('/routes/createFrame', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(dataToSend)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Error');
     }
-    console.log(but_arr[row][col].active);
+    return response.json();
+  })
+  .then(data => {
+    console.log('response:', data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+//Not Working Yet, only on the FrontEND
+function deleteFrame(){
+  var ulList = document.getElementById("list-of-anim");
+  var list = document.getElementsByClassName('li-anim')[countAnim-1];
+  if (countAnim!==0){
+    countAnim--;
+    ulList.removeChild(list);
   }
   
-  function activateButton(row, col){
-    but_arr[row][col].active = true;
+}
+
+//Remove all Frame Boxes from the page 
+function saveAll(){
+  var ulList = document.getElementById("list-of-anim");
+  while(ulList.firstChild){
+    ulList.removeChild(ulList.firstChild);
   }
-  
-  function deactivateButton(row, col){
-    but_arr[row][col].active = false;
-  }
-  
-  function applyAll() {
-      let elements = document.getElementsByClassName("but");
-      let color = document.getElementById('colorPicker').value;
-      for (let i = 0; i < elements.length; i++) {
-          elements[i].style.background = color;
-      }
+  document.getElementById('anim-selected').textContent = "No Animation Selected"; 
+  selectAnimation("No Animation Selected", true);
+}
 
-      for (let i = 0; i < 16; i++) {
-          for (let j = 0; j < 16; j++) {
-              but_arr[i][j].active = true;
-              but_arr[i][j].color = color;
-          }
-      }
-  }
-
-  function newFrame(){
-    const ulList = document.getElementById("list-of-anim");
-    var newList = document.createElement('li');
-    const textarea = document.querySelector('textarea[name="animation-name"]');
-    const countAnim = ulList.children.length;
-    const name = textarea.value;
-    newList.setAttribute("class", "li-anim");
-    newList.textContent = 'Frame ' + countAnim;
-    ulList.appendChild(newList);
-
-    const delay = document.getElementById('delay').value;
-
-    const dataToSend = {
-      but_arr: but_arr,
-      name: name,
-      frameNumber: countAnim,
-      delay: delay
-    };
-    fetch('/routes/createFrame', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(dataToSend)
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Error');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('response:', data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-  }
-
-  function deleteFrame(){
-    var ulList = document.getElementById("list-of-anim");
-    var list = document.getElementsByClassName('li-anim')[countAnim-1];
-    if (countAnim!==0){
-      countAnim--;
-      ulList.removeChild(list);
-    }
-    
-    //Logic here to send socket for deletion
-  }
-
-  function saveAll(){
-    var ulList = document.getElementById("list-of-anim");
-    while(ulList.firstChild){
-      ulList.removeChild(ulList.firstChild);
-    }
-    document.getElementById('anim-selected').textContent = "No Animation Selected"; 
-    selectAnimation("No Animation Selected", true);
-  }
-
+//Create a Modal to create a new animation
 function createAnimation(){
   const modal = document.getElementById('modal-create');
   const closeModal = document.getElementById('modal-button-create');
@@ -188,6 +181,8 @@ function createAnimation(){
   
 }
 
+//Modal to create the animation, after the user type a name and hit the "Ok" button
+//It will send the name to the DataBase
 function closeModalCreateHandler(){
   const ulList = document.getElementById("list-of-anim");
   const modal = document.getElementById('modal-create');
@@ -225,6 +220,8 @@ function closeModalCreateHandler(){
   }
 }
 
+//Create a modal and grab the names of the animations from the database, then when a animation is selected and the "ok"
+//button is clicked, it will retrieve all frames from that animation and create frame boxes that are clickable
 function editAnimation(){
   const modal = document.getElementById('modal-edit');
   const closeModal = document.getElementById('modal-button-edit');
@@ -300,7 +297,7 @@ function closeModalHandler(){
     });
   }
 }
-
+//Function to change the text at the top of the frame box
 function selectAnimation(text, status){
   document.getElementById('anim-selected').innerHTML = text;
 
@@ -311,7 +308,8 @@ function selectAnimation(text, status){
   });
 
 }
-
+//Save the changes mande to an existing animation. It will send (post) the changes to the DB
+//Then it will retrieve the changes to the page
 function saveChanges(frameNumber) {
   const animationName = document.getElementById('anim-selected').textContent;
   const newDelay = document.getElementById('delay').value;
